@@ -19,7 +19,10 @@ import ProcessDetailsScreen from './ProcessDetailsScreen';
 const SuccessScreen = ({ formData }) => {
   const [showProcessDetails, setShowProcessDetails] = useState(false);
 
+  console.log('SuccessScreen received formData:', formData);
+
   if (showProcessDetails) {
+    console.log('SuccessScreen passing formData to ProcessDetailsScreen:', formData);
     return <ProcessDetailsScreen formData={formData} />;
   }
 

@@ -15,10 +15,12 @@ interface PersonalInfo {
 
 interface FormData {
   filingStatus: string;
+  debtType?: string;
 }
 
 const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
   const [showBusinessForm, setShowBusinessForm] = useState(false);
+  const [showRetainerForm, setShowRetainerForm] = useState(false);
   const [clientInfo, setClientInfo] = useState<PersonalInfo>({
     firstName: '',
     middleName: '',
@@ -40,9 +42,22 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     return <BusinessDetailsForm clientInfo={clientInfo} />;
   }
 
+  if (showRetainerForm) {
+    return <RetainerForm clientInfo={clientInfo} />;
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowBusinessForm(true);
+    console.log('Form Data:', formData);
+    console.log('Debt Type:', formData?.debtType);
+    // Check if debtType is 'personal-business' (matches Step3's value)
+    if (formData?.debtType === 'personal-business') {
+      console.log('Showing Business Form');
+      setShowBusinessForm(true);
+    } else {
+      console.log('Showing Retainer Form');
+      setShowRetainerForm(true);
+    }
   };
 
   const SectionTitle = ({ icon: Icon, title }: { icon: any; title: string }) => (

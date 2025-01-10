@@ -7,10 +7,11 @@ interface FormData {
   debtType: string;
 }
 
-const ProcessDetailsScreen = ({ formData }) => {
+const ProcessDetailsScreen = ({ formData }: { formData: FormData }) => {
   const [showPersonalForm, setShowPersonalForm] = useState(false);
 
   if (showPersonalForm) {
+    console.log('ProcessDetailsScreen formData:', formData);
     return <PersonalDetailsForm formData={formData} />;
   }
 

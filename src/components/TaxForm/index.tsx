@@ -51,7 +51,8 @@ const TaxForm = () => {
   };
 
   if (isSuccess) {
-    return <SuccessScreen />;
+    console.log('Form Data being passed to SuccessScreen:', formData);
+    return <SuccessScreen formData={formData} />;
   }
 
   if (isProcessing) {
