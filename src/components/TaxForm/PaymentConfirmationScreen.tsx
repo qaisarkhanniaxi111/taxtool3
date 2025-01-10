@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Mail, Loader2 } from 'lucide-react';
 
-const PaymentConfirmationScreen = () => {
+interface PaymentConfirmationScreenProps {
+  formData?: any;
+}
+
+const PaymentConfirmationScreen = ({ formData }: PaymentConfirmationScreenProps) => {
   const [isProcessing, setIsProcessing] = useState(true);
 
   useEffect(() => {
@@ -12,6 +16,41 @@ const PaymentConfirmationScreen = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const getIRSFormsDescription = () => {
+    const isMarriedJoint = formData?.filingStatus === 'married-joint';
+    const isBusinessIncluded = formData?.debtType === 'personal-business';
+
+    if (isMarriedJoint && isBusinessIncluded) {
+      return (
+        <div className="space-y-1">
+          Forms 8821, 2848 Spouse, 2848 Business: Tax Information Authorization<br />
+          Forms 2848, 2848 Spouse, 2848 Business: Power of Attorney & Declaration of Representative
+        </div>
+      );
+    } else if (isMarriedJoint) {
+      return (
+        <div className="space-y-1">
+          Forms 8821 & 2848 Spouse: Tax Information Authorization<br />
+          Forms 2848 & 2848 Spouse: Power of Attorney & Declaration of Representative
+        </div>
+      );
+    } else if (isBusinessIncluded) {
+      return (
+        <div className="space-y-1">
+          Forms 8821 & 2848 Business: Tax Information Authorization<br />
+          Forms 2848 & 2848 Business: Power of Attorney & Declaration of Representative
+        </div>
+      );
+    } else {
+      return (
+        <div className="space-y-1">
+          Form 8821: Tax Information Authorization<br />
+          Form 2848: Power of Attorney & Declaration of Representative
+        </div>
+      );
+    }
+  };
 
   if (isProcessing) {
     return (
@@ -57,10 +96,20 @@ const PaymentConfirmationScreen = () => {
                   <p className="text-gray-700">
                     You will soon receive an email containing:
                   </p>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700">
-                    <li>Terms & Conditions</li>
-                    <li>Form 8821: Tax Information Authorization</li>
-                    <li>Form 2848: Power of Attorney and Declaration of Representative</li>
+                  <ul className="list-disc list-inside space-y-4 text-gray-700">
+                    <li className="space-y-1">
+                      <span className="font-medium">Terms & Conditions</span>
+                      <p className="ml-6 text-sm text-gray-600">Service agreement</p>
+                    </li>
+                    <li className="space-y-1">
+                      <span className="font-medium">IRS Forms</span>
+                      <div className="ml-6 text-gray-600">
+                        {getIRSFormsDescription()}
+                      </div>
+                    </li>
+                    <li className="space-y-1">
+                      <span className="font-medium">Compliance Questions</span>
+                    </li>
                   </ul>
                   <p className="text-sm text-gray-600">
                     If you don't see the email in your inbox within the next few minutes, please check your spam or junk folder.
@@ -70,15 +119,9 @@ const PaymentConfirmationScreen = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="text-center space-y-3">
-              <p className="text-gray-700">
-                If you need any assistance, feel free to contact us at{' '}
-                <a href="mailto:contact@remedytaxsolutions.com" className="text-blue-600 hover:underline">
-                  contact@remedytaxsolutions.com
-                </a>
-              </p>
-              <p className="text-gray-700">
-                Phone: (833) 611 - 3611
+            <div className="text-center text-gray-600">
+              <p>
+                If you have any questions, please don't hesitate to contact us.
               </p>
             </div>
           </div>

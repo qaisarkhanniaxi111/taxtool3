@@ -5,9 +5,10 @@ import PaymentConfirmationScreen from './PaymentConfirmationScreen';
 interface PaymentFormProps {
   onBack: () => void;
   amount?: number;
+  formData?: any;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, amount = 500 }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, amount = 500, formData }) => {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
@@ -25,7 +26,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, amount = 500 }) => {
   };
 
   if (isComplete) {
-    return <PaymentConfirmationScreen />;
+    return <PaymentConfirmationScreen formData={formData} />;
   }
 
   const formatCardNumber = (value: string) => {

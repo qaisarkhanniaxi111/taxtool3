@@ -60,7 +60,6 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
   });
   const [address, setAddress] = useState({
     street: '',
-    unit: '',
     city: '',
     state: '',
     zipCode: ''
@@ -90,221 +89,107 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     }));
   }, []);
 
-  // Add business form handling
-  if (formData?.debtType === 'personal-business' && !showRetainerForm) {
-    return <BusinessDetailsForm 
-      clientInfo={clientInfo} 
-      formData={formData} 
-      onNext={() => setShowRetainerForm(true)}
-    />;
-  }
-
-  if (showRetainerForm) {
-    return <RetainerForm 
-      clientInfo={clientInfo} 
-      formData={formData} 
-    />;
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    console.log('Debt Type:', formData?.debtType);
-    // Check if debtType is 'personal-business' (matches Step3's value)
     if (formData?.debtType === 'personal-business') {
-      console.log('Showing Business Form');
       setShowBusinessForm(true);
     } else {
-      console.log('Showing Retainer Form');
       setShowRetainerForm(true);
     }
   };
 
-  const SectionTitle = ({ icon: Icon, title }: { icon: any; title: string }) => (
-    <div className="flex items-center gap-3">
-      <div className="p-2 bg-blue-100 rounded-lg">
-        <Icon className="w-5 h-5 text-blue-600" />
-      </div>
-      <h3 className="text-xl font-medium text-gray-900">{title}</h3>
-    </div>
-  );
+  // Show BusinessDetailsForm if it's personal & business and showBusinessForm is true
+  if (formData?.debtType === 'personal-business' && showBusinessForm) {
+    return <BusinessDetailsForm 
+      clientInfo={clientInfo} 
+      formData={formData}
+      onNext={() => setShowRetainerForm(true)}
+    />;
+  }
 
+  // Show RetainerForm if showRetainerForm is true
+  if (showRetainerForm) {
+    return <RetainerForm 
+      clientInfo={clientInfo} 
+      formData={formData}
+    />;
+  }
+
+  // Always show the PersonalDetailsForm first
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
-      <div className="max-w-3xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-lg shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-900">Personal Details</h2>
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Personal Information Section */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <User className="w-5 h-5 text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900">Personal Information</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField label="First Name" name="firstName" value={clientInfo.firstName} onChange={handleClientInfoChange} required />
+            <InputField label="Middle Name" name="middleName" value={clientInfo.middleName} onChange={handleClientInfoChange} />
+            <InputField label="Last Name" name="lastName" value={clientInfo.lastName} onChange={handleClientInfoChange} required />
+            <InputField label="Date of Birth" name="dateOfBirth" value={clientInfo.dateOfBirth} onChange={handleClientInfoChange} required type="date" />
+            <InputField label="SSN" name="ssn" value={clientInfo.ssn} onChange={handleClientInfoChange} required />
+            <InputField label="Phone" name="phone" value={clientInfo.phone} onChange={handleClientInfoChange} required type="tel" />
+            <InputField label="Email" name="email" value={clientInfo.email} onChange={handleClientInfoChange} required type="email" />
+          </div>
+        </div>
 
-          {/* Client Information */}
+        {/* Spouse Information Section - Only show if married filing jointly */}
+        {formData?.filingStatus === 'married-joint' && (
           <div className="space-y-6">
-            <SectionTitle icon={User} title="Client Information" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <InputField
-                label="First Name"
-                name="firstName"
-                value={clientInfo.firstName}
-                onChange={handleClientInfoChange}
-                required
-              />
-              <InputField
-                label="Middle Name"
-                name="middleName"
-                value={clientInfo.middleName}
-                onChange={handleClientInfoChange}
-              />
-              <InputField
-                label="Last Name"
-                name="lastName"
-                value={clientInfo.lastName}
-                onChange={handleClientInfoChange}
-                required
-              />
-              <InputField
-                label="Date of Birth"
-                name="dateOfBirth"
-                value={clientInfo.dateOfBirth}
-                onChange={handleClientInfoChange}
-                type="date"
-                required
-              />
-              <InputField
-                label="Social Security Number"
-                name="ssn"
-                value={clientInfo.ssn}
-                onChange={handleClientInfoChange}
-                required
-              />
-              <InputField
-                label="Phone Number"
-                name="phone"
-                value={clientInfo.phone}
-                onChange={handleClientInfoChange}
-                type="tel"
-                required
-              />
-              <InputField
-                label="Email"
-                name="email"
-                value={clientInfo.email}
-                onChange={handleClientInfoChange}
-                type="email"
-                required
-              />
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Users className="w-5 h-5 text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-900">Spouse Information</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField label="First Name" name="firstName" value={spouseInfo.firstName} onChange={handleSpouseInfoChange} required />
+              <InputField label="Middle Name" name="middleName" value={spouseInfo.middleName} onChange={handleSpouseInfoChange} />
+              <InputField label="Last Name" name="lastName" value={spouseInfo.lastName} onChange={handleSpouseInfoChange} required />
+              <InputField label="Date of Birth" name="dateOfBirth" value={spouseInfo.dateOfBirth} onChange={handleSpouseInfoChange} required type="date" />
+              <InputField label="SSN" name="ssn" value={spouseInfo.ssn} onChange={handleSpouseInfoChange} required />
+              <InputField label="Phone" name="phone" value={spouseInfo.phone} onChange={handleSpouseInfoChange} required type="tel" />
+              <InputField label="Email" name="email" value={spouseInfo.email} onChange={handleSpouseInfoChange} required type="email" />
             </div>
           </div>
+        )}
 
-          {/* Spouse Information Section - Only show if married filing jointly */}
-          {formData.filingStatus === 'married-joint' && (
-            <div className="space-y-6">
-              <SectionTitle icon={Users} title="Spouse Information" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InputField
-                  label="First Name"
-                  name="firstName"
-                  value={spouseInfo.firstName}
-                  onChange={handleSpouseInfoChange}
-                  required
-                />
-                <InputField
-                  label="Middle Name"
-                  name="middleName"
-                  value={spouseInfo.middleName}
-                  onChange={handleSpouseInfoChange}
-                />
-                <InputField
-                  label="Last Name"
-                  name="lastName"
-                  value={spouseInfo.lastName}
-                  onChange={handleSpouseInfoChange}
-                  required
-                />
-                <InputField
-                  label="Date of Birth"
-                  name="dateOfBirth"
-                  value={spouseInfo.dateOfBirth}
-                  onChange={handleSpouseInfoChange}
-                  type="date"
-                  required
-                />
-                <InputField
-                  label="Social Security Number"
-                  name="ssn"
-                  value={spouseInfo.ssn}
-                  onChange={handleSpouseInfoChange}
-                  required
-                />
-                <InputField
-                  label="Phone Number"
-                  name="phone"
-                  value={spouseInfo.phone}
-                  onChange={handleSpouseInfoChange}
-                  type="tel"
-                  required
-                />
-                <InputField
-                  label="Email"
-                  name="email"
-                  value={spouseInfo.email}
-                  onChange={handleSpouseInfoChange}
-                  type="email"
-                  required
-                />
-              </div>
+        {/* Address Section */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Home className="w-5 h-5 text-blue-600" />
             </div>
-          )}
-
-          {/* Home Address */}
-          <div className="space-y-6">
-            <SectionTitle icon={Home} title="Home Address" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
-                <InputField
-                  label="Street Address"
-                  name="street"
-                  value={address.street}
-                  onChange={handleAddressChange}
-                  required
-                />
-              </div>
-              <InputField
-                label="Unit/Apt/Suite"
-                name="unit"
-                value={address.unit}
-                onChange={handleAddressChange}
-              />
-              <InputField
-                label="City"
-                name="city"
-                value={address.city}
-                onChange={handleAddressChange}
-                required
-              />
-              <InputField
-                label="State"
-                name="state"
-                value={address.state}
-                onChange={handleAddressChange}
-                required
-              />
-              <InputField
-                label="ZIP Code"
-                name="zipCode"
-                value={address.zipCode}
-                onChange={handleAddressChange}
-                required
-              />
-            </div>
+            <h2 className="text-2xl font-semibold text-gray-900">Address</h2>
           </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <InputField label="Street Address" name="street" value={address.street} onChange={handleAddressChange} required />
+            </div>
+            <InputField label="City" name="city" value={address.city} onChange={handleAddressChange} required />
+            <InputField label="State" name="state" value={address.state} onChange={handleAddressChange} required />
+            <InputField label="ZIP Code" name="zipCode" value={address.zipCode} onChange={handleAddressChange} required />
+          </div>
+        </div>
 
+        {/* Submit Button */}
+        <div className="flex justify-end">
           <button
             type="submit"
-            className="w-full py-4 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <span>Next</span>
-            <ArrowRight className="w-5 h-5" />
+            Next <ArrowRight className="w-4 h-4" />
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 };

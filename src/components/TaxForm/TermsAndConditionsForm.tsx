@@ -146,12 +146,6 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
         form2848Text: "Allows us to represent you & your business.",
       };
     } else {
-      description = (
-        <>
-          Form 8821: Tax Information Authorization<br />
-          Form 2848: Power of Attorney & Declaration of Representative
-        </>
-      );
       modalContent = {
         form8821Text: "Allows us to retrieve your tax information from the IRS.",
         form2848Text: "Allows us to represent you.",
@@ -218,12 +212,6 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
             </button>
           </div>
           <div className="p-6 overflow-y-auto whitespace-pre-line">
-            {currentDescription && (
-              <div className="mb-4">
-                <h4 className="text-lg font-semibold text-gray-900">Description:</h4>
-                <p>{currentDescription}</p>
-              </div>
-            )}
             {currentContent}
           </div>
           <div className="p-4 border-t flex justify-end">
@@ -243,7 +231,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
   const canProceed = allChecked;
 
   if (showPayment) {
-    return <PaymentForm onBack={() => setShowPayment(false)} />;
+    return <PaymentForm onBack={() => setShowPayment(false)} formData={formData} />;
   }
 
   return (

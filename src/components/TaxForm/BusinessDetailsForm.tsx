@@ -58,12 +58,10 @@ const BusinessDetailsForm = ({
 }) => {
   const [showRetainerForm, setShowRetainerForm] = useState(false);
   const [businessInfo, setBusinessInfo] = useState({
-    hasBusiness: '',
     businessName: '',
     ein: '',
-    businessType: '',
-    businessAddress: '',
-    businessPhone: ''
+    businessPhone: '',
+    businessEmail: ''
   });
   const [address, setAddress] = useState({
     street: '',
@@ -124,15 +122,6 @@ const BusinessDetailsForm = ({
           <div className="space-y-6">
             <SectionTitle icon={Building2} title="Business Information" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
-                <InputField
-                  label="Do you have a business?"
-                  name="hasBusiness"
-                  value={businessInfo.hasBusiness}
-                  onChange={handleBusinessInfoChange}
-                  required
-                />
-              </div>
               <InputField
                 label="Business Name"
                 name="businessName"
@@ -161,6 +150,14 @@ const BusinessDetailsForm = ({
                 value={businessInfo.businessPhone}
                 onChange={handleBusinessInfoChange}
                 type="tel"
+                required
+              />
+              <InputField
+                label="Business Email"
+                name="businessEmail"
+                value={businessInfo.businessEmail}
+                onChange={handleBusinessInfoChange}
+                type="email"
                 required
               />
             </div>
