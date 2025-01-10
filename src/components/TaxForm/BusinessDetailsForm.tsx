@@ -47,8 +47,16 @@ const InputField = ({ label, name, value, onChange, required = false, type = "te
   </div>
 );
 
-const BusinessDetailsForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
-  const [showRetainer, setShowRetainer] = useState(false);
+const BusinessDetailsForm = ({
+  clientInfo,
+  formData,
+  onNext
+}: {
+  clientInfo?: ClientInfo;
+  formData?: any;
+  onNext?: () => void;
+}) => {
+  const [showRetainerForm, setShowRetainerForm] = useState(false);
   const [businessInfo, setBusinessInfo] = useState({
     hasBusiness: '',
     businessName: '',
@@ -81,13 +89,20 @@ const BusinessDetailsForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
     }));
   }, []);
 
-  if (showRetainer) {
-    return <RetainerForm clientInfo={clientInfo} />;
+  if (showRetainerForm) {
+    return <RetainerForm
+      clientInfo={clientInfo}
+      formData={{
+        ...formData,
+        businessInfo,
+        address
+      }}
+    />;
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowRetainer(true);
+    setShowRetainerForm(true);
   };
 
   const SectionTitle = ({ icon: Icon, title }: { icon: any; title: string }) => (

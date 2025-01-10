@@ -16,11 +16,13 @@ interface TaxLiabilityType {
 const TermsAndConditionsForm = ({ 
   paymentOption,
   clientInfo = { firstName: '', middleName: '', lastName: '' },
-  taxLiabilityType = { hasSpouse: false, hasBusiness: false }
+  taxLiabilityType = { hasSpouse: false, hasBusiness: false },
+  formData = {}
 }: { 
   paymentOption: string;
   clientInfo?: ClientInfo;
   taxLiabilityType?: TaxLiabilityType;
+  formData?: any;
 }) => {
   const [agreements, setAgreements] = useState({
     termsAndConditions: false,
@@ -33,6 +35,7 @@ const TermsAndConditionsForm = ({
   const [showModal, setShowModal] = useState(false);
   const [currentContent, setCurrentContent] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
+  const [currentDescription, setCurrentDescription] = useState('');
 
   const handleCheckboxChange = (field: keyof typeof agreements) => {
     if (field === 'termsAndConditions' && !hasViewedTerms) {
@@ -95,31 +98,53 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
   };
 
   const getIRSFormsContent = () => {
-    const { hasSpouse, hasBusiness } = taxLiabilityType;
-    
-    // Description text based on conditions
-    let description;
-    let form8821Text;
-    let form2848Text;
+    console.log('Form Data:', formData);
+    console.log('Filing Status:', formData?.filingStatus);
+    console.log('Debt Type:', formData?.debtType);
 
-    if (hasBusiness && hasSpouse) {
+    const isMarriedJoint = formData?.filingStatus === 'married-joint';
+    const isBusinessIncluded = formData?.debtType === 'personal-business';
+
+    console.log('Is Married Joint:', isMarriedJoint);
+    console.log('Is Business Included:', isBusinessIncluded);
+
+    let title = "IRS Forms";
+    let description;
+    let modalContent;
+
+    if (isMarriedJoint && isBusinessIncluded) {
       description = (
         <>
           Forms 8821, 2848 Spouse, 2848 Business: Tax Information Authorization<br />
           Forms 2848, 2848 Spouse, 2848 Business: Power of Attorney & Declaration of Representative
         </>
       );
-      form8821Text = "Allows us to retrieve you, your spouse, & your business tax information from the IRS.";
-      form2848Text = "Allows us to represent you, your spouse & your business.";
-    } else if (hasBusiness) {
+      modalContent = {
+        form8821Text: "Allows us to retrieve you, your spouse, & your business tax information from the IRS.",
+        form2848Text: "Allows us to represent you, your spouse & your business.",
+      };
+    } else if (isMarriedJoint) {
+      description = (
+        <>
+          Forms 8821 & 2848 Spouse: Tax Information Authorization<br />
+          Forms 2848 & 2848 Spouse: Power of Attorney & Declaration of Representative
+        </>
+      );
+      modalContent = {
+        form8821Text: "Allows us to Retrieve you & your spouses tax information from the IRS.",
+        form2848Text: "Allows us to represent you & your spouse.",
+      };
+    } else if (isBusinessIncluded) {
       description = (
         <>
           Forms 8821 & 2848 Business: Tax Information Authorization<br />
           Forms 2848 & 2848 Business: Power of Attorney & Declaration of Representative
         </>
       );
-      form8821Text = "Allows us to retrieve you & your business tax information from the IRS.";
-      form2848Text = "Allows us to represent you & your business.";
+      modalContent = {
+        form8821Text: "Allows us to retrieve you & your business tax information from the IRS.",
+        form2848Text: "Allows us to represent you & your business.",
+      };
     } else {
       description = (
         <>
@@ -127,28 +152,43 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
           Form 2848: Power of Attorney & Declaration of Representative
         </>
       );
-      form8821Text = "Allows us to Retrieve you & your spouses tax information from the IRS.";
-      form2848Text = "Allows us to represent you & your spouse.";
+      modalContent = {
+        form8821Text: "Allows us to retrieve your tax information from the IRS.",
+        form2848Text: "Allows us to represent you.",
+      };
     }
 
+    console.log('Selected Modal Content:', modalContent);
+
     return {
+      title,
       description,
-      content: `
-Forms 8821
-${form8821Text}
-
-Forms 2848
-${form2848Text}
-
-Important:
-You will receive Forms via Email or Mail to Sign and Complete.`
+      modalContent: (
+        <div className="space-y-4">
+          <div>
+            <h3 className="font-semibold">Forms 8821</h3>
+            <p>{modalContent.form8821Text}</p>
+          </div>
+          <div>
+            <h3 className="font-semibold">Forms 2848</h3>
+            <p>{modalContent.form2848Text}</p>
+          </div>
+          <div>
+            <h3 className="font-semibold">Important:</h3>
+            <p>You will receive Forms via Email or Mail to Sign and Complete.</p>
+          </div>
+        </div>
+      ),
     };
   };
 
   const handleIRSFormsClick = () => {
-    const { description, content } = getIRSFormsContent();
-    setCurrentTitle('IRS Forms');
-    setCurrentContent(content);
+    console.log('IRS Forms Click - Form Data:', formData);
+    
+    const { title, description, modalContent } = getIRSFormsContent();
+    setCurrentTitle(title);
+    setCurrentDescription(description);
+    setCurrentContent(modalContent);
     setShowModal(true);
   };
 
@@ -178,6 +218,12 @@ You will receive Forms via Email or Mail to Sign and Complete.`
             </button>
           </div>
           <div className="p-6 overflow-y-auto whitespace-pre-line">
+            {currentDescription && (
+              <div className="mb-4">
+                <h4 className="text-lg font-semibold text-gray-900">Description:</h4>
+                <p>{currentDescription}</p>
+              </div>
+            )}
             {currentContent}
           </div>
           <div className="p-4 border-t flex justify-end">
@@ -223,7 +269,7 @@ You will receive Forms via Email or Mail to Sign and Complete.`
             <div>
               <button
                 onClick={handleTermsClick}
-                className="text-blue-600 hover:underline font-medium"
+                className="text-blue-600 underline font-medium"
               >
                 Terms & Conditions
               </button>
@@ -244,7 +290,7 @@ You will receive Forms via Email or Mail to Sign and Complete.`
             <div>
               <button
                 onClick={handleIRSFormsClick}
-                className="text-blue-600 hover:underline font-medium"
+                className="text-blue-600 underline font-medium"
               >
                 IRS Forms
               </button>
@@ -267,7 +313,7 @@ You will receive Forms via Email or Mail to Sign and Complete.`
             <div>
               <button
                 onClick={handleComplianceClick}
-                className="text-blue-600 hover:underline font-medium"
+                className="text-blue-600 underline font-medium"
               >
                 Compliance Questions
               </button>

@@ -8,7 +8,7 @@ interface ClientInfo {
   lastName: string;
 }
 
-const RetainerForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
+const RetainerForm = ({ clientInfo, formData }: { clientInfo?: ClientInfo; formData?: any }) => {
   const [showTerms, setShowTerms] = useState(false);
   const [paymentOption, setPaymentOption] = useState('');
   const [secondPaymentDate, setSecondPaymentDate] = useState<string>('');
@@ -69,7 +69,11 @@ const RetainerForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
   };
 
   if (showTerms) {
-    return <TermsAndConditionsForm paymentOption={paymentOption} clientInfo={clientInfo} />;
+    return <TermsAndConditionsForm 
+      paymentOption={paymentOption} 
+      clientInfo={clientInfo} 
+      formData={formData} 
+    />;
   }
 
   return (

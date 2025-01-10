@@ -13,6 +13,8 @@ interface PersonalInfo {
   email: string;
 }
 
+interface SpouseInfo extends PersonalInfo {}
+
 interface FormData {
   filingStatus: string;
   debtType?: string;
@@ -47,6 +49,15 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     phone: '',
     email: ''
   });
+  const [spouseInfo, setSpouseInfo] = useState<SpouseInfo>({
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    dateOfBirth: '',
+    ssn: '',
+    phone: '',
+    email: ''
+  });
   const [address, setAddress] = useState({
     street: '',
     unit: '',
@@ -63,6 +74,14 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     }));
   }, []);
 
+  const handleSpouseInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSpouseInfo(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
+
   const handleAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAddress(prev => ({
@@ -71,12 +90,20 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     }));
   }, []);
 
-  if (showBusinessForm) {
-    return <BusinessDetailsForm clientInfo={clientInfo} />;
+  // Add business form handling
+  if (formData?.debtType === 'personal-business' && !showRetainerForm) {
+    return <BusinessDetailsForm 
+      clientInfo={clientInfo} 
+      formData={formData} 
+      onNext={() => setShowRetainerForm(true)}
+    />;
   }
 
   if (showRetainerForm) {
-    return <RetainerForm clientInfo={clientInfo} />;
+    return <RetainerForm 
+      clientInfo={clientInfo} 
+      formData={formData} 
+    />;
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -165,6 +192,66 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
               />
             </div>
           </div>
+
+          {/* Spouse Information Section - Only show if married filing jointly */}
+          {formData.filingStatus === 'married-joint' && (
+            <div className="space-y-6">
+              <SectionTitle icon={Users} title="Spouse Information" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <InputField
+                  label="First Name"
+                  name="firstName"
+                  value={spouseInfo.firstName}
+                  onChange={handleSpouseInfoChange}
+                  required
+                />
+                <InputField
+                  label="Middle Name"
+                  name="middleName"
+                  value={spouseInfo.middleName}
+                  onChange={handleSpouseInfoChange}
+                />
+                <InputField
+                  label="Last Name"
+                  name="lastName"
+                  value={spouseInfo.lastName}
+                  onChange={handleSpouseInfoChange}
+                  required
+                />
+                <InputField
+                  label="Date of Birth"
+                  name="dateOfBirth"
+                  value={spouseInfo.dateOfBirth}
+                  onChange={handleSpouseInfoChange}
+                  type="date"
+                  required
+                />
+                <InputField
+                  label="Social Security Number"
+                  name="ssn"
+                  value={spouseInfo.ssn}
+                  onChange={handleSpouseInfoChange}
+                  required
+                />
+                <InputField
+                  label="Phone Number"
+                  name="phone"
+                  value={spouseInfo.phone}
+                  onChange={handleSpouseInfoChange}
+                  type="tel"
+                  required
+                />
+                <InputField
+                  label="Email"
+                  name="email"
+                  value={spouseInfo.email}
+                  onChange={handleSpouseInfoChange}
+                  type="email"
+                  required
+                />
+              </div>
+            </div>
+          )}
 
           {/* Home Address */}
           <div className="space-y-6">
