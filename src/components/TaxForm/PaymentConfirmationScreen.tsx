@@ -58,8 +58,9 @@ const PaymentConfirmationScreen = () => {
                     You will soon receive an email containing:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-gray-700">
-                    <li>A summary of your tax investigation</li>
-                    <li>A copy of the signed documents</li>
+                    <li>Terms & Conditions</li>
+                    <li>Form 8821: Tax Information Authorization</li>
+                    <li>Form 2848: Power of Attorney and Declaration of Representative</li>
                   </ul>
                   <p className="text-sm text-gray-600">
                     If you don't see the email in your inbox within the next few minutes, please check your spam or junk folder.

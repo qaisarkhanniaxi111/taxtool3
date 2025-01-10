@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, CreditCard, PenTool } from 'lucide-react';
+import { CreditCard } from 'lucide-react';
 import PaymentForm from './PaymentForm';
 
 interface ClientInfo {
@@ -8,41 +8,48 @@ interface ClientInfo {
   lastName: string;
 }
 
+interface TaxLiabilityType {
+  hasSpouse: boolean;
+  hasBusiness: boolean;
+}
+
 const TermsAndConditionsForm = ({ 
   paymentOption,
-  clientInfo = { firstName: '', middleName: '', lastName: '' }
+  clientInfo = { firstName: '', middleName: '', lastName: '' },
+  taxLiabilityType = { hasSpouse: false, hasBusiness: false }
 }: { 
   paymentOption: string;
   clientInfo?: ClientInfo;
+  taxLiabilityType?: TaxLiabilityType;
 }) => {
   const [agreements, setAgreements] = useState({
-    noDirectPayments: false,
-    retainerCredit: false,
-    phase2Understanding: false
+    termsAndConditions: false,
+    irsForms: false,
+    complianceQuestions: false
   });
-  const [signedDocs, setSignedDocs] = useState({
-    serviceAgreement: false,
-    form8821: false,
-    form2848: false
-  });
-  const [showPayment, setShowPayment] = useState(false);
-  const [viewedAgreements, setViewedAgreements] = useState({
-    serviceAgreement: false,
-    form8821: false,
-    form2848: false
-  });
+  const [hasViewedTerms, setHasViewedTerms] = useState(false);
   const [showError, setShowError] = useState('');
+  const [showPayment, setShowPayment] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [currentAgreement, setCurrentAgreement] = useState('');
+  const [currentContent, setCurrentContent] = useState('');
+  const [currentTitle, setCurrentTitle] = useState('');
 
-  const getClientFullName = () => {
-    const { firstName, middleName, lastName } = clientInfo;
-    return `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`.trim() || '[Client Name]';
+  const handleCheckboxChange = (field: keyof typeof agreements) => {
+    if (field === 'termsAndConditions' && !hasViewedTerms) {
+      setShowError('Please read the Terms & Conditions before accepting');
+      return;
+    }
+    setShowError('');
+    setAgreements(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
   };
 
-  const agreementContents = {
-    serviceAgreement: `
-This agreement is entered into between ${getClientFullName()} ("Client") and Remedy Tax Solutions ("RTS"). By signing this agreement, the Client retains RTS to represent them in resolving tax-related matters, subject to the terms outlined herein. RTS agrees to provide the services specified in this agreement in consideration of the Client's payment of the fees set forth in Section 4.
+  const handleTermsClick = () => {
+    setCurrentTitle('Terms & Conditions');
+    setCurrentContent(`
+This agreement is entered into between ${clientInfo.firstName} ${clientInfo.middleName ? clientInfo.middleName + ' ' : ''}${clientInfo.lastName} ("Client") and Remedy Tax Solutions ("RTS"). By signing this agreement, the Client retains RTS to represent them in resolving tax-related matters, subject to the terms outlined herein. RTS agrees to provide the services specified in this agreement in consideration of the Client's payment of the fees set forth in Section 4.
 
 Section 1. Client Information Ownership Disclosure
 The Client acknowledges that all personal information provided including name, address, Social Security number, birthdate, phone number, and email address pertains solely to them or the party involved in the tax matter for which RTS has been retained. The Client affirms that this information is accurate and relevant to their tax situation. The Client authorizes RTS to use this information exclusively for tax resolution purposes, in compliance with applicable laws and privacy policies. Misrepresentation or misuse of this information may result in termination of this agreement and potential legal consequences.
@@ -82,92 +89,100 @@ Section 5. Cancellation and Refund Policy
 
 NOTICE AND ACKNOWLEDGMENT
 THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND CONDITIONS OUTLINED HEREIN, INCLUDING ANY POLICIES, DISCLAIMERS, AND NOTICES. THE CLIENT ACKNOWLEDGES THAT THIS AGREEMENT IS BINDING AND REPRESENTS THEIR INFORMED CONSENT TO PROCEED AND ACKNOWLEDGES PAYMENT FOR SERVICES AND AGREES TO RETAIN RTS FOR THE RETAINER FEE TO REPRESENT THE CLIENT BEFORE THE IRS AND OR STATE TAXING AUTHORITY(S). I FURTHER ACKNOWLEDGE THAT NO WARRANTIES, GUARANTIES OR PROMISES HAVE BEEN MADE TO ME AS TO ANY ULTIMATE OUTCOME CONCERNING MY TAX LIABILITY(S).
-`,
-    form8821: `
-      Form 8821: Tax Information Authorization
-      
-      This form allows us to:
-      1. Receive and inspect your confidential tax information
-      2. Discuss your tax matters with the IRS
-      3. Receive copies of IRS notices and documents
-      
-      Important Notes:
-      - This form does not authorize us to represent you before the IRS
-      - You maintain control over your tax matters
-      - Authorization can be revoked at any time
-    `,
-    form2848: `
-      Form 2848: Power of Attorney and Declaration of Representative
-      
-      This form authorizes us to:
-      1. Represent you before the IRS
-      2. Sign documents on your behalf
-      3. Enter into agreements with the IRS
-      4. Access your tax records
-      
-      Important Notes:
-      - This grants us legal authority to act on your behalf
-      - You remain responsible for accuracy of information
-      - Power of attorney can be revoked at any time
-    `
-  };
-
-  const handleViewAgreement = (key: keyof typeof viewedAgreements) => {
-    setCurrentAgreement(key);
+`);
     setShowModal(true);
-    setViewedAgreements(prev => ({
-      ...prev,
-      [key]: true
-    }));
+    setHasViewedTerms(true);
   };
 
-  const handleAgreementChange = (key: keyof typeof agreements, value: boolean) => {
-    setAgreements(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
+  const getIRSFormsContent = () => {
+    const { hasSpouse, hasBusiness } = taxLiabilityType;
+    
+    // Description text based on conditions
+    let description;
+    let form8821Text;
+    let form2848Text;
 
-  const handleCheckboxChange = (key: keyof typeof agreements) => {
-    setAgreements(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-  };
-
-  const handleSignDocument = (key: keyof typeof signedDocs) => {
-    if (!viewedAgreements[key]) {
-      setShowError('Click the blue Terms & Conditions link to review before checking this box to confirm you have read and understood them.');
-      return;
+    if (hasBusiness && hasSpouse) {
+      description = (
+        <>
+          Forms 8821, 2848 Spouse, 2848 Business: Tax Information Authorization<br />
+          Forms 2848, 2848 Spouse, 2848 Business: Power of Attorney & Declaration of Representative
+        </>
+      );
+      form8821Text = "Allows us to retrieve you, your spouse, & your business tax information from the IRS.";
+      form2848Text = "Allows us to represent you, your spouse & your business.";
+    } else if (hasBusiness) {
+      description = (
+        <>
+          Forms 8821 & 2848 Business: Tax Information Authorization<br />
+          Forms 2848 & 2848 Business: Power of Attorney & Declaration of Representative
+        </>
+      );
+      form8821Text = "Allows us to retrieve you & your business tax information from the IRS.";
+      form2848Text = "Allows us to represent you & your business.";
+    } else {
+      description = (
+        <>
+          Form 8821: Tax Information Authorization<br />
+          Form 2848: Power of Attorney & Declaration of Representative
+        </>
+      );
+      form8821Text = "Allows us to Retrieve you & your spouses tax information from the IRS.";
+      form2848Text = "Allows us to represent you & your spouse.";
     }
-    setShowError('');
-    setSignedDocs(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+
+    return {
+      description,
+      content: `
+Forms 8821
+${form8821Text}
+
+Forms 2848
+${form2848Text}
+
+Important:
+You will receive Forms via Email or Mail to Sign and Complete.`
+    };
   };
 
-  const Modal = ({ show, onClose, title, content }) => {
-    if (!show) return null;
+  const handleIRSFormsClick = () => {
+    const { description, content } = getIRSFormsContent();
+    setCurrentTitle('IRS Forms');
+    setCurrentContent(content);
+    setShowModal(true);
+  };
+
+  const handleComplianceClick = () => {
+    setCurrentTitle('Compliance Questions');
+    const complianceContent = `I understand
+- I am not making direct payments to the IRS through this agreement.
+- The retainer paid will be credited toward the overall resolution cost.${paymentOption === 'split' ? '\n- Phase 2 will not commence until the retainer is paid in full.' : ''}`;
+    
+    setCurrentContent(complianceContent);
+    setShowModal(true);
+  };
+
+  const Modal = () => {
+    if (!showModal) return null;
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] flex flex-col">
           <div className="p-4 border-b flex justify-between items-center">
-            <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+            <h3 className="text-xl font-semibold text-gray-900">{currentTitle}</h3>
             <button 
-              onClick={onClose}
+              onClick={() => setShowModal(false)}
               className="text-gray-500 hover:text-gray-700"
             >
               ✕
             </button>
           </div>
           <div className="p-6 overflow-y-auto whitespace-pre-line">
-            {content}
+            {currentContent}
           </div>
           <div className="p-4 border-t flex justify-end">
             <button
-              onClick={onClose}
+              onClick={() => setShowModal(false)}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             >
               Close
@@ -178,66 +193,21 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
     );
   };
 
-  const allChecked = paymentOption === 'split' 
-    ? Object.values(agreements).every(value => value)
-    : agreements.noDirectPayments && agreements.retainerCredit;
-    
-  const allSigned = Object.values(signedDocs).every(value => value);
-  const canProceed = allChecked && allSigned;
-
-  console.log('Payment Option:', paymentOption);
-  console.log('Agreements:', agreements);
-  console.log('Signed Docs:', signedDocs);
-  console.log('All Checked:', allChecked);
-  console.log('All Signed:', allSigned);
-  console.log('Can Proceed:', canProceed);
+  const allChecked = Object.values(agreements).every(value => value);
+  const canProceed = allChecked;
 
   if (showPayment) {
     return <PaymentForm onBack={() => setShowPayment(false)} />;
   }
 
-  const DocumentCard = ({ title, description, signed, onSign, agreementKey }: { 
-    title: string; 
-    description: string; 
-    signed: boolean;
-    onSign: () => void;
-    agreementKey: keyof typeof viewedAgreements;
-  }) => (
-    <div className="p-4 bg-gray-50 rounded-lg flex items-center justify-between">
-      <div>
-        <h4 className="font-medium text-gray-900 mb-2">
-          <button
-            onClick={() => handleViewAgreement(agreementKey)}
-            className="text-blue-500 hover:text-blue-700 underline"
-          >
-            {title}
-          </button>
-        </h4>
-        <p className="text-gray-600">{description}</p>
-      </div>
-      <button
-        onClick={onSign}
-        className={`p-2 rounded-lg ${signed ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}
-      >
-        <PenTool className="w-5 h-5" />
-      </button>
-    </div>
-  );
-
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-sm">
-      <Modal 
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        title={currentAgreement === 'serviceAgreement' ? 'Terms & Conditions' :
-              currentAgreement === 'form8821' ? 'Form 8821: Tax Information Authorization' :
-              'Form 2848: Power of Attorney'}
-        content={agreementContents[currentAgreement]}
-      />
+      <Modal />
+      
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-gray-900">Terms & Conditions</h2>
-        <p className="text-gray-600 mt-2">Please Read and Check the following boxes</p>
+        <p className="text-gray-600 mt-2">Please read and check the following boxes</p>
       </div>
 
       {showError && (
@@ -246,75 +216,69 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
         </div>
       )}
 
-      {/* Documents Section */}
       <div className="space-y-6">
-        <DocumentCard
-          title="Terms & Conditions"
-          description="Service Agreement"
-          signed={signedDocs.serviceAgreement}
-          onSign={() => handleSignDocument('serviceAgreement')}
-          agreementKey="serviceAgreement"
-        />
-
-        <DocumentCard
-          title="Form 8821: Tax Information Authorization"
-          description="Allows us to retrieve the necessary documents from the IRS"
-          signed={signedDocs.form8821}
-          onSign={() => handleSignDocument('form8821')}
-          agreementKey="form8821"
-        />
-
-        <DocumentCard
-          title="Form 2848: Power of Attorney and Declaration of Representative"
-          description="Allow us to represent you"
-          signed={signedDocs.form2848}
-          onSign={() => handleSignDocument('form2848')}
-          agreementKey="form2848"
-        />
-      </div>
-
-      {/* Agreements */}
-      <div className="space-y-6 mt-8">
-        <h3 className="text-xl font-medium text-gray-900">Please check the following boxes</h3>
-
-        <div className="space-y-4">
-          <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+        {/* Terms & Conditions Box */}
+        <div className="p-4 border rounded-lg">
+          <div className="flex items-center space-x-3">
             <input
               type="checkbox"
-              checked={agreements.noDirectPayments}
-              onChange={(e) => handleAgreementChange('noDirectPayments', e.target.checked)}
-              className="mt-1 w-4 h-4 text-blue-500 rounded"
+              checked={agreements.termsAndConditions}
+              onChange={() => handleCheckboxChange('termsAndConditions')}
+              className="h-4 w-4"
             />
-            <span className="text-gray-700">
-              I understand that I am not making direct payments to the IRS through this agreement.
-            </span>
-          </label>
+            <div>
+              <button
+                onClick={handleTermsClick}
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Terms & Conditions
+              </button>
+              <p className="text-sm text-gray-600">Service agreement</p>
+            </div>
+          </div>
+        </div>
 
-          <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+        {/* IRS Forms Box */}
+        <div className="p-4 border rounded-lg">
+          <div className="flex items-center space-x-3">
             <input
               type="checkbox"
-              checked={agreements.retainerCredit}
-              onChange={(e) => handleAgreementChange('retainerCredit', e.target.checked)}
-              className="mt-1 w-4 h-4 text-blue-500 rounded"
+              checked={agreements.irsForms}
+              onChange={() => handleCheckboxChange('irsForms')}
+              className="h-4 w-4"
             />
-            <span className="text-gray-700">
-              I understand that the retainer paid will be credited toward the overall resolution cost.
-            </span>
-          </label>
+            <div>
+              <button
+                onClick={handleIRSFormsClick}
+                className="text-blue-600 hover:underline font-medium"
+              >
+                IRS Forms
+              </button>
+              <p className="text-sm text-gray-600">
+                {getIRSFormsContent().description}
+              </p>
+            </div>
+          </div>
+        </div>
 
-          {paymentOption === 'split' && (
-            <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input
-                type="checkbox"
-                checked={agreements.phase2Understanding}
-                onChange={(e) => handleAgreementChange('phase2Understanding', e.target.checked)}
-                className="mt-1 w-4 h-4 text-blue-500 rounded"
-              />
-              <span className="text-gray-700">
-                I understand that Phase 2 will not commence until the retainer is paid in full.
-              </span>
-            </label>
-          )}
+        {/* Compliance Questions Box */}
+        <div className="p-4 border rounded-lg">
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              checked={agreements.complianceQuestions}
+              onChange={() => handleCheckboxChange('complianceQuestions')}
+              className="h-4 w-4"
+            />
+            <div>
+              <button
+                onClick={handleComplianceClick}
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Compliance Questions
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
