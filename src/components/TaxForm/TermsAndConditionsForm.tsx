@@ -219,13 +219,7 @@ You will receive Forms via Email or Mail to Sign and Complete.`
       <div className="space-y-6">
         {/* Terms & Conditions Box */}
         <div className="p-4 border rounded-lg">
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={agreements.termsAndConditions}
-              onChange={() => handleCheckboxChange('termsAndConditions')}
-              className="h-4 w-4"
-            />
+          <div className="flex items-center justify-between">
             <div>
               <button
                 onClick={handleTermsClick}
@@ -235,18 +229,18 @@ You will receive Forms via Email or Mail to Sign and Complete.`
               </button>
               <p className="text-sm text-gray-600">Service agreement</p>
             </div>
+            <input
+              type="checkbox"
+              checked={agreements.termsAndConditions}
+              onChange={() => handleCheckboxChange('termsAndConditions')}
+              className="h-4 w-4"
+            />
           </div>
         </div>
 
         {/* IRS Forms Box */}
         <div className="p-4 border rounded-lg">
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={agreements.irsForms}
-              onChange={() => handleCheckboxChange('irsForms')}
-              className="h-4 w-4"
-            />
+          <div className="flex items-center justify-between">
             <div>
               <button
                 onClick={handleIRSFormsClick}
@@ -258,18 +252,18 @@ You will receive Forms via Email or Mail to Sign and Complete.`
                 {getIRSFormsContent().description}
               </p>
             </div>
+            <input
+              type="checkbox"
+              checked={agreements.irsForms}
+              onChange={() => handleCheckboxChange('irsForms')}
+              className="h-4 w-4"
+            />
           </div>
         </div>
 
         {/* Compliance Questions Box */}
         <div className="p-4 border rounded-lg">
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={agreements.complianceQuestions}
-              onChange={() => handleCheckboxChange('complianceQuestions')}
-              className="h-4 w-4"
-            />
+          <div className="flex items-center justify-between">
             <div>
               <button
                 onClick={handleComplianceClick}
@@ -278,6 +272,12 @@ You will receive Forms via Email or Mail to Sign and Complete.`
                 Compliance Questions
               </button>
             </div>
+            <input
+              type="checkbox"
+              checked={agreements.complianceQuestions}
+              onChange={() => handleCheckboxChange('complianceQuestions')}
+              className="h-4 w-4"
+            />
           </div>
         </div>
       </div>

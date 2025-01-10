@@ -26,6 +26,19 @@ const SuccessScreen = ({ formData }) => {
     return <ProcessDetailsScreen formData={formData} />;
   }
 
+  // Check conditions for showing different sections
+  const showFederalTaxFiling = formData?.taxFilings === 'missed';
+  
+  const showBusinessTaxFiling = 
+    formData?.taxFilings === 'missed' && 
+    formData?.debtType === 'personal-business';
+  
+  const showEmploymentTaxFilings = showBusinessTaxFiling; // Same conditions as Business Tax Filing
+  
+  const showGarnishmentRemoval = formData?.selectedActions?.includes('garnishment');
+  
+  const showLevyRemoval = formData?.selectedActions?.includes('levy');
+
   return (
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="max-w-3xl mx-auto">
@@ -50,6 +63,7 @@ const SuccessScreen = ({ formData }) => {
               </p>
 
               <div className="space-y-6">
+                {/* Standard programs - always shown */}
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <div className="flex items-start">
                     <div className="p-2 bg-blue-100 rounded-lg">
@@ -136,99 +150,106 @@ const SuccessScreen = ({ formData }) => {
                   </div>
                 </div>
 
-                {/* Rest of the component remains unchanged */}
-                {/* Federal Tax Filing */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <FileText className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="font-semibold text-gray-900">Federal Tax Filing</h3>
-                      <ul className="mt-2 space-y-1 text-gray-700">
-                        <li>W2-1040</li>
-                        <li>1099</li>
-                      </ul>
+                {/* Conditional sections */}
+                {showFederalTaxFiling && (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-start">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <FileText className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900">Federal Tax Filing</h3>
+                        <ul className="mt-2 space-y-1 text-gray-700">
+                          <li>W2-1040</li>
+                          <li>1099</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Business Tax Filing */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Building2 className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="font-semibold text-gray-900">Business Tax Filing</h3>
-                      <ul className="mt-2 space-y-2 text-gray-700">
-                        <li><span className="font-medium">Form 1120:</span> For corporations to report income, deductions, and credits.</li>
-                        <li><span className="font-medium">Form 1120-S:</span> For S corporations</li>
-                        <li><span className="font-medium">Form 1065:</span> For partnerships, reporting income, deductions, and distribution of profits.</li>
-                        <li><span className="font-medium">Schedule C (with Form 1040):</span> For sole proprietors to report business income and expenses.</li>
-                      </ul>
+                {showBusinessTaxFiling && (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-start">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Building2 className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900">Business Tax Filing</h3>
+                        <ul className="mt-2 space-y-2 text-gray-700">
+                          <li><span className="font-medium">Form 1120:</span> For corporations to report income, deductions, and credits.</li>
+                          <li><span className="font-medium">Form 1120-S:</span> For S corporations</li>
+                          <li><span className="font-medium">Form 1065:</span> For partnerships, reporting income, deductions, and distribution of profits.</li>
+                          <li><span className="font-medium">Schedule C (with Form 1040):</span> For sole proprietors to report business income and expenses.</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Employment Tax Filings */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Users className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="font-semibold text-gray-900">Employment Tax Filings</h3>
-                      <ul className="mt-2 space-y-2 text-gray-700">
-                        <li><span className="font-medium">Form 941:</span> Employer's Quarterly Federal Tax Return, reporting income tax, Social Security, and Medicare taxes withheld from employee paychecks.</li>
-                        <li><span className="font-medium">Form 940:</span> For Federal Unemployment (FUTA) tax.</li>
-                        <li><span className="font-medium">Form W-2:</span> Filed by employers to report employee wages and taxes withheld.</li>
-                        <li><span className="font-medium">Form 1099-NEC:</span> For reporting payments to independent contractors.</li>
-                      </ul>
+                {showEmploymentTaxFilings && (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-start">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Users className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900">Employment Tax Filings</h3>
+                        <ul className="mt-2 space-y-2 text-gray-700">
+                          <li><span className="font-medium">Form 941:</span> Employer's Quarterly Federal Tax Return, reporting income tax, Social Security, and Medicare taxes withheld from employee paychecks.</li>
+                          <li><span className="font-medium">Form 940:</span> For Federal Unemployment (FUTA) tax.</li>
+                          <li><span className="font-medium">Form W-2:</span> Filed by employers to report employee wages and taxes withheld.</li>
+                          <li><span className="font-medium">Form 1099-NEC:</span> For reporting payments to independent contractors.</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Garnishment Removal */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Ban className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="font-semibold text-gray-900">Garnishment Removal</h3>
-                      <p className="mt-2 text-gray-700">
-                        We contact the IRS to notify them that we are representing you to resolve your tax debt as well as lift the active garnishment.
-                      </p>
+                {showGarnishmentRemoval && (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-start">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Ban className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900">Garnishment Removal</h3>
+                        <p className="mt-2 text-gray-700">
+                          We contact the IRS to notify them that we are representing you to resolve your tax debt as well as lift the active garnishment.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Levy Removal */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <ShieldBan className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="font-semibold text-gray-900">Levy Removal</h3>
-                      <p className="mt-2 text-gray-700">
-                        We contact the IRS to notify them that we are representing you to resolve your tax debt as well as lift the active levy on your account.
-                      </p>
+                {showLevyRemoval && (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-start">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <ShieldBan className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900">Levy Removal</h3>
+                        <p className="mt-2 text-gray-700">
+                          We contact the IRS to notify them that we are representing you to resolve your tax debt as well as lift the active levy.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 
-            {/* Discover Process CTA */}
-            <button 
-              onClick={() => setShowProcessDetails(true)}
-              className="w-full py-4 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
-            >
-              <span>Discover the Process</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
+            {/* Process Details Button */}
+            <div className="mt-8 pt-4 border-t">
+              <button
+                onClick={() => setShowProcessDetails(true)}
+                className="w-full py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center"
+              >
+                <span>View Process Details</span>
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
