@@ -121,8 +121,27 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
     }));
   };
 
+  const handleAgreementChange = (key: keyof typeof agreements, value: boolean) => {
+    setAgreements(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
   const handleCheckboxChange = (key: keyof typeof agreements) => {
     setAgreements(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const handleSignDocument = (key: keyof typeof signedDocs) => {
+    if (!viewedAgreements[key]) {
+      setShowError('Click the blue Terms & Conditions link to review before checking this box to confirm you have read and understood them.');
+      return;
+    }
+    setShowError('');
+    setSignedDocs(prev => ({
       ...prev,
       [key]: !prev[key]
     }));
@@ -157,18 +176,6 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
         </div>
       </div>
     );
-  };
-
-  const handleSignDocument = (key: keyof typeof signedDocs) => {
-    if (!viewedAgreements[key]) {
-      setShowError('Click the blue Terms & Conditions link to review before checking this box to confirm you have read and understood them.');
-      return;
-    }
-    setShowError('');
-    setSignedDocs(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
   };
 
   const allChecked = paymentOption === 'split' 
@@ -267,7 +274,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
       </div>
 
       {/* Agreements */}
-      <div className="space-y-6">
+      <div className="space-y-6 mt-8">
         <h3 className="text-xl font-medium text-gray-900">Please check the following boxes</h3>
 
         <div className="space-y-4">
@@ -275,7 +282,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
             <input
               type="checkbox"
               checked={agreements.noDirectPayments}
-              onChange={() => handleCheckboxChange('noDirectPayments')}
+              onChange={(e) => handleAgreementChange('noDirectPayments', e.target.checked)}
               className="mt-1 w-4 h-4 text-blue-500 rounded"
             />
             <span className="text-gray-700">
@@ -287,7 +294,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
             <input
               type="checkbox"
               checked={agreements.retainerCredit}
-              onChange={() => handleCheckboxChange('retainerCredit')}
+              onChange={(e) => handleAgreementChange('retainerCredit', e.target.checked)}
               className="mt-1 w-4 h-4 text-blue-500 rounded"
             />
             <span className="text-gray-700">
@@ -300,7 +307,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
               <input
                 type="checkbox"
                 checked={agreements.phase2Understanding}
-                onChange={() => handleCheckboxChange('phase2Understanding')}
+                onChange={(e) => handleAgreementChange('phase2Understanding', e.target.checked)}
                 className="mt-1 w-4 h-4 text-blue-500 rounded"
               />
               <span className="text-gray-700">
@@ -312,18 +319,20 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
       </div>
 
       {/* Process Payment Button */}
-      <button
-        onClick={() => setShowPayment(true)}
-        disabled={!canProceed}
-        className={`w-full py-4 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2
-          ${canProceed 
-            ? 'bg-green-500 text-white hover:bg-green-600' 
-            : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-          }`}
-      >
-        <span>Process Payment</span>
-        <CreditCard className="w-5 h-5" />
-      </button>
+      <div className="mt-8 pt-4 border-t">
+        <button
+          onClick={() => setShowPayment(true)}
+          disabled={!canProceed}
+          className={`w-full py-4 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2
+            ${canProceed 
+              ? 'bg-green-500 text-white hover:bg-green-600' 
+              : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            }`}
+        >
+          <span>Process Payment</span>
+          <CreditCard className="w-5 h-5 ml-2" />
+        </button>
+      </div>
     </div>
   );
 };

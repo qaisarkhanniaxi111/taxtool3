@@ -47,9 +47,20 @@ const RetainerForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
     });
   };
 
-  const getBusinessDateAfterPayment = () => {
+  const getFullPaymentDate = () => {
     const today = new Date();
     const futureDate = addBusinessDays(today, 7);
+    return futureDate.toLocaleDateString('en-US', { 
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const getSplitPaymentDate = () => {
+    if (!secondPaymentDate) return '';
+    const secondPayment = new Date(secondPaymentDate);
+    const futureDate = addBusinessDays(secondPayment, 7);
     return futureDate.toLocaleDateString('en-US', { 
       month: 'short',
       day: 'numeric',
@@ -99,7 +110,7 @@ const RetainerForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
                   <span className="text-gray-900">Pay In Full</span>
                   <span className="text-sm ml-2">
                     <span className="text-green-300">Estimated Time to Resolution</span>{" "}
-                    <span className="text-green-700">{getBusinessDateAfterPayment()}</span>
+                    <span className="text-green-700">{getFullPaymentDate()}</span>
                   </span>
                 </span>
               </label>
@@ -117,7 +128,7 @@ const RetainerForm = ({ clientInfo }: { clientInfo?: ClientInfo }) => {
                   {paymentOption === 'split' && (
                     <span className="text-sm ml-2">
                       <span className="text-orange-300">Estimated Time to Resolution</span>{" "}
-                      <span className="text-orange-700">{getBusinessDateAfterPayment()}</span>
+                      <span className="text-orange-700">{getSplitPaymentDate() || 'Select second payment date'}</span>
                     </span>
                   )}
                 </span>

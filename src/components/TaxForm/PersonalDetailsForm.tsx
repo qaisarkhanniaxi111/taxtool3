@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { User, Users, Home, ArrowRight } from 'lucide-react';
 import BusinessDetailsForm from './BusinessDetailsForm';
 import RetainerForm from './RetainerForm';
@@ -17,6 +17,23 @@ interface FormData {
   filingStatus: string;
   debtType?: string;
 }
+
+const InputField = ({ label, name, value, onChange, required = false, type = "text" }) => (
+  <div>
+    <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <input
+      type={type}
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      required={required}
+      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+    />
+  </div>
+);
 
 const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
   const [showBusinessForm, setShowBusinessForm] = useState(false);
@@ -37,6 +54,22 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     state: '',
     zipCode: ''
   });
+
+  const handleClientInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setClientInfo(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
+
+  const handleAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAddress(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
   if (showBusinessForm) {
     return <BusinessDetailsForm clientInfo={clientInfo} />;
@@ -69,23 +102,6 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     </div>
   );
 
-  const InputField = ({ label, name, value, onChange, required = false, type = "text" }) => (
-    <div>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      <input
-        type={type}
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        required={required}
-        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
-      />
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="max-w-3xl mx-auto">
@@ -98,52 +114,52 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <InputField
                 label="First Name"
-                name="clientFirstName"
+                name="firstName"
                 value={clientInfo.firstName}
-                onChange={(e) => setClientInfo({ ...clientInfo, firstName: e.target.value })}
+                onChange={handleClientInfoChange}
                 required
               />
               <InputField
                 label="Middle Name"
-                name="clientMiddleName"
+                name="middleName"
                 value={clientInfo.middleName}
-                onChange={(e) => setClientInfo({ ...clientInfo, middleName: e.target.value })}
+                onChange={handleClientInfoChange}
               />
               <InputField
                 label="Last Name"
-                name="clientLastName"
+                name="lastName"
                 value={clientInfo.lastName}
-                onChange={(e) => setClientInfo({ ...clientInfo, lastName: e.target.value })}
+                onChange={handleClientInfoChange}
                 required
               />
               <InputField
                 label="Date of Birth"
-                name="clientDob"
+                name="dateOfBirth"
                 value={clientInfo.dateOfBirth}
-                onChange={(e) => setClientInfo({ ...clientInfo, dateOfBirth: e.target.value })}
+                onChange={handleClientInfoChange}
                 type="date"
                 required
               />
               <InputField
                 label="Social Security Number"
-                name="clientSsn"
+                name="ssn"
                 value={clientInfo.ssn}
-                onChange={(e) => setClientInfo({ ...clientInfo, ssn: e.target.value })}
+                onChange={handleClientInfoChange}
                 required
               />
               <InputField
                 label="Phone Number"
-                name="clientPhone"
+                name="phone"
                 value={clientInfo.phone}
-                onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
+                onChange={handleClientInfoChange}
                 type="tel"
                 required
               />
               <InputField
                 label="Email"
-                name="clientEmail"
+                name="email"
                 value={clientInfo.email}
-                onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
+                onChange={handleClientInfoChange}
                 type="email"
                 required
               />
@@ -156,38 +172,38 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <InputField
-                  label="Street"
+                  label="Street Address"
                   name="street"
                   value={address.street}
-                  onChange={(e) => setAddress({ ...address, street: e.target.value })}
+                  onChange={handleAddressChange}
                   required
                 />
               </div>
               <InputField
-                label="Unit, Suite, Apt #"
+                label="Unit/Apt/Suite"
                 name="unit"
                 value={address.unit}
-                onChange={(e) => setAddress({ ...address, unit: e.target.value })}
+                onChange={handleAddressChange}
               />
               <InputField
                 label="City"
                 name="city"
                 value={address.city}
-                onChange={(e) => setAddress({ ...address, city: e.target.value })}
+                onChange={handleAddressChange}
                 required
               />
               <InputField
                 label="State"
                 name="state"
                 value={address.state}
-                onChange={(e) => setAddress({ ...address, state: e.target.value })}
+                onChange={handleAddressChange}
                 required
               />
               <InputField
-                label="Zip Code"
+                label="ZIP Code"
                 name="zipCode"
                 value={address.zipCode}
-                onChange={(e) => setAddress({ ...address, zipCode: e.target.value })}
+                onChange={handleAddressChange}
                 required
               />
             </div>

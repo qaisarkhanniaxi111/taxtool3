@@ -42,7 +42,7 @@ const Step5 = ({ onNext, onPrevious, formData }: Step5Props) => {
           {/* Bankruptcy Status */}
           <div className="border-b pb-4">
             <h3 className="font-medium text-gray-900">Bankruptcy Status</h3>
-            <p className="text-gray-700">{formData.bankruptcyStatus === 'no' ? 'Not in bankruptcy' : 'In bankruptcy'}</p>
+            <p className="text-gray-700">Not in bankruptcy</p>
           </div>
 
           {/* Filing Information */}
