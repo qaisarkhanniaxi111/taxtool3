@@ -87,16 +87,29 @@ const BusinessDetailsForm = ({
     }));
   }, []);
 
+
   if (showRetainerForm) {
+    const updatedFormData = {
+      ...formData,
+      businessName: businessInfo.businessName,
+      ein: businessInfo.ein,
+      businessPhone: businessInfo.businessPhone,
+      businessEmail: businessInfo.businessEmail,
+      businessAddress: address.street,
+      businessCity: address.city,
+      businessState: address.state,
+      businessZipCode: address.zipCode
+    };
+    
     return <RetainerForm
       clientInfo={clientInfo}
-      formData={{
-        ...formData,
-        businessInfo,
-        address
-      }}
+      formData={updatedFormData}
     />;
   }
+  
+
+
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

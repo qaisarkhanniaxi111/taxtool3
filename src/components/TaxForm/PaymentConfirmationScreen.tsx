@@ -9,13 +9,55 @@ const PaymentConfirmationScreen = ({ formData }: PaymentConfirmationScreenProps)
   const [isProcessing, setIsProcessing] = useState(true);
 
   useEffect(() => {
-    // Simulate processing time
-    const timer = setTimeout(() => {
-      setIsProcessing(false);
-    }, 3000);
+    const sendFormData = async () => {
+      try {
+        console.log('Starting form data submission process...');
+        console.log('Form data to be sent:', formData);
 
-    return () => clearTimeout(timer);
-  }, []);
+        
+        // Simulate processing time
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        console.log('Processing time completed, attempting to send data...');
+        
+        // Send form data to Google Sheets
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzqOl8XFxVoZko6yVcx-eK0vxiNKK28Og7hTmALyOSCuhRsxTy0eKiq_olEQvjGwYh5/exec", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData),
+          mode: "no-cors"
+        });
+        
+        console.log('Data sent successfully!');
+        console.log('Response status:', response.status);
+        console.log('Response type:', response.type);
+        
+        setIsProcessing(false);
+      } catch (error) {
+        console.error("Detailed error when sending form data:", {
+          error: error,
+          errorMessage: error.message,
+          errorStack: error.stack
+        });
+        // Still set processing to false even if there's an error
+        setIsProcessing(false);
+      }
+    };
+
+    if (formData) {
+      console.log('FormData is present, initiating data send...');
+      sendFormData();
+    } else {
+      console.warn('FormData is missing or undefined!', formData);
+      setIsProcessing(false);
+    }
+    
+    return () => {
+      // Cleanup if needed
+      console.log('Cleanup: Component unmounting');
+    };
+  }, [formData]);
 
   const getIRSFormsDescription = () => {
     const isMarriedJoint = formData?.filingStatus === 'married-joint';
@@ -106,9 +148,6 @@ const PaymentConfirmationScreen = ({ formData }: PaymentConfirmationScreenProps)
                       <div className="ml-6 text-gray-600">
                         {getIRSFormsDescription()}
                       </div>
-                    </li>
-                    <li className="space-y-1">
-                      <span className="font-medium">Compliance Questions</span>
                     </li>
                   </ul>
                   <p className="text-sm text-gray-600">

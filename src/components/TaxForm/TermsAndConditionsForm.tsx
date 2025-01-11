@@ -6,6 +6,14 @@ interface ClientInfo {
   firstName: string;
   middleName: string;
   lastName: string;
+  email?: string;
+  phone?: string;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
 }
 
 interface TaxLiabilityType {
@@ -48,7 +56,7 @@ const TermsAndConditionsForm = ({
       [field]: !prev[field]
     }));
   };
-
+  
   const handleTermsClick = () => {
     setCurrentTitle('Terms & Conditions');
     setCurrentContent(`
@@ -115,7 +123,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
     if (isMarriedJoint && isBusinessIncluded) {
       description = (
         <>
-          Forms 8821, 2848 Spouse, 2848 Business: Tax Information Authorization<br />
+          Forms 8821, 8821 Spouse, 8821 Business: Tax Information Authorization<br />
           Forms 2848, 2848 Spouse, 2848 Business: Power of Attorney & Declaration of Representative
         </>
       );
@@ -126,7 +134,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
     } else if (isMarriedJoint) {
       description = (
         <>
-          Forms 8821 & 2848 Spouse: Tax Information Authorization<br />
+          Forms 8821 & 8821 Spouse: Tax Information Authorization<br />
           Forms 2848 & 2848 Spouse: Power of Attorney & Declaration of Representative
         </>
       );
@@ -137,7 +145,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
     } else if (isBusinessIncluded) {
       description = (
         <>
-          Forms 8821 & 2848 Business: Tax Information Authorization<br />
+          Forms 8821 & 8821 Business: Tax Information Authorization<br />
           Forms 2848 & 2848 Business: Power of Attorney & Declaration of Representative
         </>
       );
@@ -231,7 +239,24 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
   const canProceed = allChecked;
 
   if (showPayment) {
-    return <PaymentForm onBack={() => setShowPayment(false)} formData={formData} />;
+    // Merge clientInfo and payment info with formData before passing to PaymentForm
+    const updatedFormData = {
+      ...formData,
+      firstName: clientInfo?.firstName || '',
+      middleName: clientInfo?.middleName || '',
+      lastName: clientInfo?.lastName || '',
+      email: clientInfo?.email || '',
+      phone: clientInfo?.phone || '',
+      street: clientInfo?.address?.street || '',
+      city: clientInfo?.address?.city || '',
+      state: clientInfo?.address?.state || '',
+      zipCode: clientInfo?.address?.zipCode || '',
+      paymentOption: paymentOption,
+      amount: paymentOption === 'full' ? 500 : 250,
+      paymentDate: new Date().toISOString(),
+      secondPaymentDate: paymentOption === 'split' ? formData.secondPaymentDate : null
+    };
+    return <PaymentForm onBack={() => setShowPayment(false)} formData={updatedFormData} />;
   }
 
   return (
@@ -327,7 +352,7 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
               : 'bg-gray-200 text-gray-500 cursor-not-allowed'
             }`}
         >
-          <span>Process Payment</span>
+          <span>PROCEED TO PAYMENT</span>
           <CreditCard className="w-5 h-5 ml-2" />
         </button>
       </div>

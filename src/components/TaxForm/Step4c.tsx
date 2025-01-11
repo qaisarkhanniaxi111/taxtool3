@@ -57,7 +57,7 @@ const Step4c = ({ onNext, onPrevious, formData, updateFormData }) => {
                 onChange={(e) => setSelectedAssets({...selectedAssets, [asset.id]: e.target.value})}
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">Select range</option>
+                <option value=""></option>
                 {ASSET_RANGES.map((range) => (
                   <option key={range} value={range}>{range}</option>
                 ))}

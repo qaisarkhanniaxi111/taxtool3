@@ -173,7 +173,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, amount = 500, formDat
                     : 'bg-green-500 hover:bg-green-600'
                 } text-white`}
               >
-                {isProcessing ? 'Processing...' : `Pay $${amount}`}
+                {isProcessing ? 'Processing...' : `PAY`}
               </button>
             </div>
           </form>

@@ -100,8 +100,13 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
 
   // Show BusinessDetailsForm if it's personal & business and showBusinessForm is true
   if (formData?.debtType === 'personal-business' && showBusinessForm) {
+    const fullClientInfo = {
+      ...clientInfo,
+      address: address
+    };
+    
     return <BusinessDetailsForm 
-      clientInfo={clientInfo} 
+      clientInfo={fullClientInfo} 
       formData={formData}
       onNext={() => setShowRetainerForm(true)}
     />;
@@ -109,8 +114,13 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
 
   // Show RetainerForm if showRetainerForm is true
   if (showRetainerForm) {
+    const fullClientInfo = {
+      ...clientInfo,
+      address: address
+    };
+    
     return <RetainerForm 
-      clientInfo={clientInfo} 
+      clientInfo={fullClientInfo} 
       formData={formData}
     />;
   }
