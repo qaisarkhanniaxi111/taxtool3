@@ -6,6 +6,21 @@ interface ClientInfo {
   firstName: string;
   middleName: string;
   lastName: string;
+  dateOfBirth: string;
+  ssn: string;
+  phone: string;
+  email: string;
+  spouseFirstName: string;
+  spouseMiddleName: string;
+  spouseLastName: string;
+  spouseDateOfBirth: string;
+  spouseSsn: string;
+  spousePhone: string;
+  spouseEmail: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
 
 const RetainerForm = ({ clientInfo, formData }: { clientInfo?: ClientInfo; formData?: any }) => {

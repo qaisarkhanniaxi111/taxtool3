@@ -11,9 +11,18 @@ interface PersonalInfo {
   ssn: string;
   phone: string;
   email: string;
+  spouseFirstName: string;
+  spouseMiddleName: string;
+  spouseLastName: string;
+  spouseDateOfBirth: string;
+  spouseSsn: string;
+  spousePhone: string;
+  spouseEmail: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
-
-interface SpouseInfo extends PersonalInfo {}
 
 interface FormData {
   filingStatus: string;
@@ -47,18 +56,14 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     dateOfBirth: '',
     ssn: '',
     phone: '',
-    email: ''
-  });
-  const [spouseInfo, setSpouseInfo] = useState<SpouseInfo>({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: '',
-    ssn: '',
-    phone: '',
-    email: ''
-  });
-  const [address, setAddress] = useState({
+    email: '',
+    spouseFirstName: '',
+    spouseMiddleName: '',
+    spouseLastName: '',
+    spouseDateOfBirth: '',
+    spouseSsn: '',
+    spousePhone: '',
+    spouseEmail: '',
     street: '',
     city: '',
     state: '',
@@ -68,22 +73,6 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
   const handleClientInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setClientInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  }, []);
-
-  const handleSpouseInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSpouseInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  }, []);
-
-  const handleAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAddress(prev => ({
       ...prev,
       [name]: value
     }));
@@ -100,13 +89,8 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
 
   // Show BusinessDetailsForm if it's personal & business and showBusinessForm is true
   if (formData?.debtType === 'personal-business' && showBusinessForm) {
-    const fullClientInfo = {
-      ...clientInfo,
-      address: address
-    };
-    
     return <BusinessDetailsForm 
-      clientInfo={fullClientInfo} 
+      clientInfo={clientInfo} 
       formData={formData}
       onNext={() => setShowRetainerForm(true)}
     />;
@@ -114,13 +98,8 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
 
   // Show RetainerForm if showRetainerForm is true
   if (showRetainerForm) {
-    const fullClientInfo = {
-      ...clientInfo,
-      address: address
-    };
-    
     return <RetainerForm 
-      clientInfo={fullClientInfo} 
+      clientInfo={clientInfo} 
       formData={formData}
     />;
   }
@@ -160,13 +139,13 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InputField label="First Name" name="firstName" value={spouseInfo.firstName} onChange={handleSpouseInfoChange} required />
-              <InputField label="Middle Name" name="middleName" value={spouseInfo.middleName} onChange={handleSpouseInfoChange} />
-              <InputField label="Last Name" name="lastName" value={spouseInfo.lastName} onChange={handleSpouseInfoChange} required />
-              <InputField label="Date of Birth" name="dateOfBirth" value={spouseInfo.dateOfBirth} onChange={handleSpouseInfoChange} required type="date" />
-              <InputField label="SSN" name="ssn" value={spouseInfo.ssn} onChange={handleSpouseInfoChange} required />
-              <InputField label="Phone" name="phone" value={spouseInfo.phone} onChange={handleSpouseInfoChange} required type="tel" />
-              <InputField label="Email" name="email" value={spouseInfo.email} onChange={handleSpouseInfoChange} required type="email" />
+              <InputField label="First Name" name="spouseFirstName" value={clientInfo.spouseFirstName} onChange={handleClientInfoChange} required />
+              <InputField label="Middle Name" name="spouseMiddleName" value={clientInfo.spouseMiddleName} onChange={handleClientInfoChange} />
+              <InputField label="Last Name" name="spouseLastName" value={clientInfo.spouseLastName} onChange={handleClientInfoChange} required />
+              <InputField label="Date of Birth" name="spouseDateOfBirth" value={clientInfo.spouseDateOfBirth} onChange={handleClientInfoChange} required type="date" />
+              <InputField label="SSN" name="spouseSsn" value={clientInfo.spouseSsn} onChange={handleClientInfoChange} required />
+              <InputField label="Phone" name="spousePhone" value={clientInfo.spousePhone} onChange={handleClientInfoChange} required type="tel" />
+              <InputField label="Email" name="spouseEmail" value={clientInfo.spouseEmail} onChange={handleClientInfoChange} required type="email" />
             </div>
           </div>
         )}
@@ -182,11 +161,11 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <InputField label="Street Address" name="street" value={address.street} onChange={handleAddressChange} required />
+              <InputField label="Street Address" name="street" value={clientInfo.street} onChange={handleClientInfoChange} required />
             </div>
-            <InputField label="City" name="city" value={address.city} onChange={handleAddressChange} required />
-            <InputField label="State" name="state" value={address.state} onChange={handleAddressChange} required />
-            <InputField label="ZIP Code" name="zipCode" value={address.zipCode} onChange={handleAddressChange} required />
+            <InputField label="City" name="city" value={clientInfo.city} onChange={handleClientInfoChange} required />
+            <InputField label="State" name="state" value={clientInfo.state} onChange={handleClientInfoChange} required />
+            <InputField label="ZIP Code" name="zipCode" value={clientInfo.zipCode} onChange={handleClientInfoChange} required />
           </div>
         </div>
 

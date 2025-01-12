@@ -6,14 +6,21 @@ interface ClientInfo {
   firstName: string;
   middleName: string;
   lastName: string;
-  email?: string;
-  phone?: string;
-  address?: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
+  dateOfBirth: string;
+  ssn: string;
+  phone: string;
+  email: string;
+  spouseFirstName: string;
+  spouseMiddleName: string;
+  spouseLastName: string;
+  spouseDateOfBirth: string;
+  spouseSsn: string;
+  spousePhone: string;
+  spouseEmail: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
 }
 
 interface TaxLiabilityType {
@@ -23,13 +30,11 @@ interface TaxLiabilityType {
 
 const TermsAndConditionsForm = ({ 
   paymentOption,
-  clientInfo = { firstName: '', middleName: '', lastName: '' },
-  taxLiabilityType = { hasSpouse: false, hasBusiness: false },
+  clientInfo,
   formData = {}
 }: { 
   paymentOption: string;
-  clientInfo?: ClientInfo;
-  taxLiabilityType?: TaxLiabilityType;
+  clientInfo: ClientInfo;
   formData?: any;
 }) => {
   const [agreements, setAgreements] = useState({
@@ -242,15 +247,24 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
     // Merge clientInfo and payment info with formData before passing to PaymentForm
     const updatedFormData = {
       ...formData,
-      firstName: clientInfo?.firstName || '',
-      middleName: clientInfo?.middleName || '',
-      lastName: clientInfo?.lastName || '',
-      email: clientInfo?.email || '',
-      phone: clientInfo?.phone || '',
-      street: clientInfo?.address?.street || '',
-      city: clientInfo?.address?.city || '',
-      state: clientInfo?.address?.state || '',
-      zipCode: clientInfo?.address?.zipCode || '',
+      firstName: clientInfo.firstName,
+      middleName: clientInfo.middleName,
+      lastName: clientInfo.lastName,
+      dateOfBirth: clientInfo.dateOfBirth,
+      ssn: clientInfo.ssn,
+      email: clientInfo.email,
+      phone: clientInfo.phone,
+      street: clientInfo.street,
+      city: clientInfo.city,
+      state: clientInfo.state,
+      zipCode: clientInfo.zipCode,
+      spouseFirstName: clientInfo.spouseFirstName,
+      spouseMiddleName: clientInfo.spouseMiddleName,
+      spouseLastName: clientInfo.spouseLastName,
+      spouseDateOfBirth: clientInfo.spouseDateOfBirth,
+      spouseSsn: clientInfo.spouseSsn,
+      spouseEmail: clientInfo.spouseEmail,
+      spousePhone: clientInfo.spousePhone,
       paymentOption: paymentOption,
       amount: paymentOption === 'full' ? 500 : 250,
       paymentDate: new Date().toISOString(),
