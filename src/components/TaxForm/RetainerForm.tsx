@@ -83,11 +83,24 @@ const RetainerForm = ({ clientInfo, formData }: { clientInfo?: ClientInfo; formD
     });
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Date selected:', e.target.value);
+    setSecondPaymentDate(e.target.value);
+  };
+
   if (showTerms) {
+    console.log('showTerms is true');
+    console.log('paymentOption:', paymentOption);
+    console.log('secondPaymentDate:', secondPaymentDate);
+    console.log('formData:', formData);
     return <TermsAndConditionsForm 
       paymentOption={paymentOption} 
       clientInfo={clientInfo} 
-      formData={formData} 
+      formData={{
+        ...formData,
+        paymentOption,
+        secondPaymentDate: secondPaymentDate,
+      }} 
     />;
   }
 
@@ -171,7 +184,7 @@ const RetainerForm = ({ clientInfo, formData }: { clientInfo?: ClientInfo; formD
                   <input
                     type="date"
                     value={secondPaymentDate}
-                    onChange={(e) => setSecondPaymentDate(e.target.value)}
+                    onChange={handleDateChange}
                     className="w-full p-2 border rounded-lg"
                     min={getCurrentDate()} // Can't be before first payment date
                   />

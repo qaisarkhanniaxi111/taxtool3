@@ -268,8 +268,12 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
       paymentOption: paymentOption,
       amount: paymentOption === 'full' ? 500 : 250,
       paymentDate: new Date().toISOString(),
-      secondPaymentDate: paymentOption === 'split' ? formData.secondPaymentDate : null
+      secondPaymentDate: formData.secondPaymentDate
     };
+    
+    console.log('TermsAndConditionsForm - Received formData:', formData);
+    console.log('TermsAndConditionsForm - Updated formData:', updatedFormData);
+    
     return <PaymentForm onBack={() => setShowPayment(false)} formData={updatedFormData} />;
   }
 
