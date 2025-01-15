@@ -61,76 +61,80 @@ const TaxForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="fixed top-4 left-4 z-50">
+      {/* Logo - smaller on mobile, adjusted position */}
+      <div className="fixed top-2 left-2 sm:top-4 sm:left-4 z-50">
         <a href="https://remedytaxsolutions.com" target="_blank" rel="noopener noreferrer">
           <img 
             src="/Group-237892-2.png" 
             alt="Remedy Tax Solutions Logo" 
-            className="h-12 w-auto hover:opacity-90 transition-opacity"
+            className="h-8 sm:h-12 w-auto hover:opacity-90 transition-opacity"
           />
         </a>
       </div>
-      <div className="py-12">
-        {currentStep === 1 && (
-          <Step1 
-            onNext={handleNext} 
-          />
-        )}
-        {currentStep === 2 && (
-          <Step2 
-            onNext={handleNext} 
-            onPrevious={handlePrevious}
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        )}
-        {currentStep === 3 && (
-          <Step3a 
-            onNext={handleNext} 
-            onPrevious={handlePrevious}
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        )}
-        {currentStep === 4 && (
-          <Step3b 
-            onNext={handleNext} 
-            onPrevious={handlePrevious}
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        )}
-        {currentStep === 5 && (
-          <Step4a 
-            onNext={handleNext} 
-            onPrevious={handlePrevious}
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        )}
-        {currentStep === 6 && (
-          <Step4b
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        )}
-        {currentStep === 7 && (
-          <Step4c
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        )}
-        {currentStep === 8 && (
-          <Step5
-            onNext={handleSubmit}
-            onPrevious={handlePrevious}
-            formData={formData}
-          />
-        )}
+      {/* Main content - adjusted padding for mobile */}
+      <div className="py-6 sm:py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {currentStep === 1 && (
+            <Step1 
+              onNext={handleNext} 
+            />
+          )}
+          {currentStep === 2 && (
+            <Step2 
+              onNext={handleNext} 
+              onPrevious={handlePrevious}
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          )}
+          {currentStep === 3 && (
+            <Step3a 
+              onNext={handleNext} 
+              onPrevious={handlePrevious}
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          )}
+          {currentStep === 4 && (
+            <Step3b 
+              onNext={handleNext} 
+              onPrevious={handlePrevious}
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          )}
+          {currentStep === 5 && (
+            <Step4a 
+              onNext={handleNext} 
+              onPrevious={handlePrevious}
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          )}
+          {currentStep === 6 && (
+            <Step4b
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          )}
+          {currentStep === 7 && (
+            <Step4c
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          )}
+          {currentStep === 8 && (
+            <Step5
+              onNext={handleSubmit}
+              onPrevious={handlePrevious}
+              formData={formData}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
