@@ -61,19 +61,18 @@ const TaxForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Logo container */}
-      <div className="absolute p-2 sm:p-4">
+      <div className="fixed top-4 left-4 z-50">
         <a href="https://remedytaxsolutions.com" target="_blank" rel="noopener noreferrer">
           <img 
             src="/Group-237892-2.png" 
             alt="Remedy Tax Solutions Logo" 
-            className="h-10 sm:h-12 w-auto hover:opacity-90 transition-opacity"
+            className="h-12 w-auto hover:opacity-90 transition-opacity"
           />
         </a>
       </div>
       
-      {/* Main content with top padding to account for logo */}
-      <div className="pt-16 sm:pt-20">
+      {/* Main content with increased top padding on mobile */}
+      <div className="pt-24 sm:pt-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {currentStep === 1 && (
             <Step1 
