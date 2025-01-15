@@ -70,12 +70,34 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     zipCode: ''
   });
 
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digit characters
+    const phoneNumber = value.replace(/\D/g, '');
+    
+    // Format the number as (XXX) XXX-XXXX
+    if (phoneNumber.length <= 3) {
+      return phoneNumber;
+    } else if (phoneNumber.length <= 6) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    } else {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+    }
+  };
+
   const handleClientInfoChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setClientInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (name === 'phone' || name === 'spousePhone') {
+      const formattedNumber = formatPhoneNumber(value);
+      setClientInfo(prev => ({
+        ...prev,
+        [name]: formattedNumber
+      }));
+    } else {
+      setClientInfo(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -123,8 +145,25 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
             <InputField label="Last Name" name="lastName" value={clientInfo.lastName} onChange={handleClientInfoChange} required />
             <InputField label="Date of Birth" name="dateOfBirth" value={clientInfo.dateOfBirth} onChange={handleClientInfoChange} required type="date" />
             <InputField label="SSN" name="ssn" value={clientInfo.ssn} onChange={handleClientInfoChange} required />
-            <InputField label="Phone" name="phone" value={clientInfo.phone} onChange={handleClientInfoChange} required type="tel" />
-            <InputField label="Email" name="email" value={clientInfo.email} onChange={handleClientInfoChange} required type="email" />
+            <InputField
+              label="Phone Number"
+              name="phone"
+              value={clientInfo.phone}
+              onChange={handleClientInfoChange}
+              required={true}
+              type="tel"
+              pattern="\(\d{3}\) \d{3}-\d{4}"
+              placeholder="(XXX) XXX-XXXX"
+              maxLength={14}
+            />
+            <InputField
+              label="Email"
+              name="email"
+              value={clientInfo.email}
+              onChange={handleClientInfoChange}
+              required={true}
+              type="email"
+            />
           </div>
         </div>
 
@@ -144,8 +183,25 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
               <InputField label="Last Name" name="spouseLastName" value={clientInfo.spouseLastName} onChange={handleClientInfoChange} required />
               <InputField label="Date of Birth" name="spouseDateOfBirth" value={clientInfo.spouseDateOfBirth} onChange={handleClientInfoChange} required type="date" />
               <InputField label="SSN" name="spouseSsn" value={clientInfo.spouseSsn} onChange={handleClientInfoChange} required />
-              <InputField label="Phone" name="spousePhone" value={clientInfo.spousePhone} onChange={handleClientInfoChange} required type="tel" />
-              <InputField label="Email" name="spouseEmail" value={clientInfo.spouseEmail} onChange={handleClientInfoChange} required type="email" />
+              <InputField
+                label="Phone Number"
+                name="spousePhone"
+                value={clientInfo.spousePhone}
+                onChange={handleClientInfoChange}
+                required={true}
+                type="tel"
+                pattern="\(\d{3}\) \d{3}-\d{4}"
+                placeholder="(XXX) XXX-XXXX"
+                maxLength={14}
+              />
+              <InputField
+                label="Email"
+                name="spouseEmail"
+                value={clientInfo.spouseEmail}
+                onChange={handleClientInfoChange}
+                required={true}
+                type="email"
+              />
             </div>
           </div>
         )}

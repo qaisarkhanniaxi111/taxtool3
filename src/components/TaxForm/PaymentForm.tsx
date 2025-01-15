@@ -201,60 +201,73 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, formData }) => {
       {isComplete ? (
         <PaymentConfirmationScreen formData={formData} />
       ) : (
-        <div className="w-full max-w-md mx-auto p-6">
-          <form onSubmit={handlePayment} className="space-y-6">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-semibold text-gray-900">Payment Details</h2>
-              
-              {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600">{error}</p>
-                </div>
-              )}
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="w-full max-w-md p-6">
+            <form onSubmit={handlePayment} className="space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-semibold text-gray-900">Payment Details</h2>
+                
+                {error && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                )}
 
-              {isPartialPayment && (
                 <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">First Payment: ${firstPaymentAmount.toFixed(2)}</p>
-                    <p className="text-sm text-gray-500">Due today</p>
+                  <div className="border-b pb-2 mb-2">
+                    <p className="text-sm font-medium text-gray-700">Customer Name</p>
+                    <p className="text-sm text-gray-900">{formData?.firstName} {formData?.middleName ? `${formData.middleName} ` : ''}{formData?.lastName}</p>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Second Payment: ${secondPaymentAmount.toFixed(2)}</p>
-                    <p className="text-sm text-gray-500">Due on {formatDate(secondPaymentDate)}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="p-4 border rounded-md bg-white shadow-sm">
-                <div id="card-container" className="min-h-[100px]"></div>
-              </div>
-
-              <div className="flex justify-between mt-6">
-                <button
-                  type="button"
-                  onClick={onBack}
-                  disabled={isProcessing}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={isProcessing || isLoading}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                >
-                  {isProcessing ? (
+                  {isPartialPayment ? (
                     <>
-                      <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                      Processing...
+                      <div>
+                        <p className="text-sm font-medium text-gray-700">First Payment: ${firstPaymentAmount.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">Due today</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-700">Second Payment: ${secondPaymentAmount.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">Due on {formatDate(secondPaymentDate)}</p>
+                      </div>
                     </>
                   ) : (
-                    `Pay ${isPartialPayment ? `$${firstPaymentAmount.toFixed(2)} now` : `$${amount.toFixed(2)}`}`
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">Full Payment: ${amount.toFixed(2)}</p>
+                      <p className="text-sm text-gray-500">Due today</p>
+                    </div>
                   )}
-                </button>
+                </div>
+
+                <div className="p-4 border rounded-md bg-white shadow-sm">
+                  <div id="card-container" className="min-h-[100px]"></div>
+                </div>
+
+                <div className="flex justify-between mt-6">
+                  <button
+                    type="button"
+                    onClick={onBack}
+                    disabled={isProcessing}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isProcessing || isLoading}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                        Processing...
+                      </>
+                    ) : (
+                      `Pay ${isPartialPayment ? `$${firstPaymentAmount.toFixed(2)} now` : `$${amount.toFixed(2)}`}`
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       )}
     </div>

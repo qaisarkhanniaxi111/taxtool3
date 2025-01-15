@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Check, Mail, Loader2 } from 'lucide-react';
 
 interface PaymentConfirmationScreenProps {
@@ -7,18 +7,28 @@ interface PaymentConfirmationScreenProps {
 
 const PaymentConfirmationScreen = ({ formData }: PaymentConfirmationScreenProps) => {
   const [isProcessing, setIsProcessing] = useState(true);
+  const hasSubmitted = useRef(false);
 
   useEffect(() => {
     const sendFormData = async () => {
+      // If already submitted, don't send again
+      if (hasSubmitted.current) {
+        console.log('Data already submitted, skipping...');
+        setIsProcessing(false);
+        return;
+      }
+
       try {
         console.log('Starting form data submission process...');
         console.log('Form data to be sent:', formData);
 
-        
+        // Mark as submitted before sending
+        hasSubmitted.current = true;
+
         // Simulate processing time
         await new Promise(resolve => setTimeout(resolve, 3000));
         console.log('Processing time completed, attempting to send data...');
-        
+
         // Send form data to Google Sheets
         const response = await fetch("https://script.google.com/macros/s/AKfycbzqOl8XFxVoZko6yVcx-eK0vxiNKK28Og7hTmALyOSCuhRsxTy0eKiq_olEQvjGwYh5/exec", {
           method: "POST",
@@ -28,11 +38,11 @@ const PaymentConfirmationScreen = ({ formData }: PaymentConfirmationScreenProps)
           body: JSON.stringify(formData),
           mode: "no-cors"
         });
-        
+
         console.log('Data sent successfully!');
         console.log('Response status:', response.status);
         console.log('Response type:', response.type);
-        
+
         setIsProcessing(false);
       } catch (error) {
         console.error("Detailed error when sending form data:", {
@@ -40,19 +50,19 @@ const PaymentConfirmationScreen = ({ formData }: PaymentConfirmationScreenProps)
           errorMessage: error.message,
           errorStack: error.stack
         });
-        // Still set processing to false even if there's an error
+        // Don't reset hasSubmitted on error to prevent retries
         setIsProcessing(false);
       }
     };
 
-    if (formData) {
+    if (formData && !hasSubmitted.current) {
       console.log('FormData is present, initiating data send...');
       sendFormData();
     } else {
       console.warn('FormData is missing or undefined!', formData);
       setIsProcessing(false);
     }
-    
+
     return () => {
       // Cleanup if needed
       console.log('Cleanup: Component unmounting');
