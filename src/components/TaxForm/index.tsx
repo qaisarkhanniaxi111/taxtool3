@@ -66,7 +66,7 @@ const TaxForm = () => {
           <img 
             src="/Group-237892-2.png" 
             alt="Remedy Tax Solutions Logo" 
-            className="h-16 w-auto hover:opacity-90 transition-opacity"
+            className="h-12 w-auto hover:opacity-90 transition-opacity"
           />
         </a>
       </div>
