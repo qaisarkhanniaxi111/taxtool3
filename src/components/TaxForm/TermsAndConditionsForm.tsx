@@ -278,104 +278,140 @@ THE CLIENT CONFIRMS THAT THEY HAVE READ, UNDERSTOOD, AND AGREED TO THE TERMS AND
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-sm">
-        <Modal />
-        
-        {/* Header */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900">Terms & Conditions</h2>
-          <p className="text-gray-600 mt-2">Please read and check the following boxes</p>
-        </div>
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-7xl mx-auto p-6">
+        {!showPayment ? (
+          <div className="bg-white rounded-lg shadow-sm p-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">Terms & Conditions</h2>
+            
+            {/* Checkbox Container */}
+            <div className="space-y-6 max-w-full">
+              {/* Terms & Conditions Box */}
+              <div className="p-4 border rounded-lg w-full">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <button
+                      onClick={handleTermsClick}
+                      className="text-blue-600 underline font-medium hover:text-blue-800"
+                    >
+                      Terms & Conditions
+                    </button>
+                    <p className="text-sm text-gray-600">Service agreement</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id="termsAndConditions"
+                    checked={agreements.termsAndConditions}
+                    onChange={() => handleCheckboxChange('termsAndConditions')}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                </div>
+              </div>
 
-        {showError && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {showError}
+              {/* IRS Forms Box */}
+              <div className="p-4 border rounded-lg w-full">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <button
+                      onClick={handleIRSFormsClick}
+                      className="text-blue-600 underline font-medium hover:text-blue-800"
+                    >
+                      IRS Forms
+                    </button>
+                    <p className="text-sm text-gray-600">
+                      {getIRSFormsContent().description}
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id="irsForms"
+                    checked={agreements.irsForms}
+                    onChange={() => handleCheckboxChange('irsForms')}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* Compliance Questions Box */}
+              <div className="p-4 border rounded-lg w-full">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <button
+                      onClick={handleComplianceClick}
+                      className="text-blue-600 underline font-medium hover:text-blue-800"
+                    >
+                      Compliance Questions
+                    </button>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id="complianceQuestions"
+                    checked={agreements.complianceQuestions}
+                    onChange={() => handleCheckboxChange('complianceQuestions')}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {showError && (
+              <div className="mt-4 text-red-600 text-sm">
+                {showError}
+              </div>
+            )}
+
+            {/* Continue Button */}
+            <div className="mt-8 pt-4 border-t">
+              <button
+                onClick={() => setShowPayment(true)}
+                disabled={!canProceed}
+                className={`w-full py-4 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2
+                  ${canProceed 
+                    ? 'bg-green-500 text-white hover:bg-green-600' 
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  }`}
+              >
+                <span>PROCEED TO PAYMENT</span>
+                <CreditCard className="w-5 h-5 ml-2" />
+              </button>
+            </div>
           </div>
+        ) : (
+          <PaymentForm
+            onBack={() => setShowPayment(false)}
+            formData={formData}
+            paymentOption={paymentOption}
+          />
         )}
-
-        <div className="flex flex-col items-center justify-center space-y-6 w-full">
-          {/* Terms & Conditions Box */}
-          <div className="p-4 border rounded-lg w-full">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={handleTermsClick}
-                  className="text-blue-600 underline font-medium"
-                >
-                  Terms & Conditions
-                </button>
-                <p className="text-sm text-gray-600">Service agreement</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={agreements.termsAndConditions}
-                onChange={() => handleCheckboxChange('termsAndConditions')}
-                className="h-4 w-4"
-              />
-            </div>
-          </div>
-
-          {/* IRS Forms Box */}
-          <div className="p-4 border rounded-lg w-full">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={handleIRSFormsClick}
-                  className="text-blue-600 underline font-medium"
-                >
-                  IRS Forms
-                </button>
-                <p className="text-sm text-gray-600">
-                  {getIRSFormsContent().description}
-                </p>
-              </div>
-              <input
-                type="checkbox"
-                checked={agreements.irsForms}
-                onChange={() => handleCheckboxChange('irsForms')}
-                className="h-4 w-4"
-              />
-            </div>
-          </div>
-
-          {/* Compliance Questions Box */}
-          <div className="p-4 border rounded-lg w-full">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={handleComplianceClick}
-                  className="text-blue-600 underline font-medium"
-                >
-                  Compliance Questions
-                </button>
-              </div>
-              <input
-                type="checkbox"
-                checked={agreements.complianceQuestions}
-                onChange={() => handleCheckboxChange('complianceQuestions')}
-                className="h-4 w-4"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Process Payment Button */}
-        <div className="mt-8 pt-4 border-t">
-          <button
-            onClick={() => setShowPayment(true)}
-            disabled={!canProceed}
-            className={`w-full py-4 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2
-              ${canProceed 
-                ? 'bg-green-500 text-white hover:bg-green-600' 
-                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-              }`}
-          >
-            <span>PROCEED TO PAYMENT</span>
-            <CreditCard className="w-5 h-5 ml-2" />
-          </button>
-        </div>
       </div>
+
+      {/* Terms Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">{currentTitle}</h3>
+              {currentDescription && (
+                <p className="text-gray-600 mb-4">{currentDescription}</p>
+              )}
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700">
+                  {currentContent}
+                </pre>
+              </div>
+            </div>
+            <div className="border-t px-6 py-4 flex justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

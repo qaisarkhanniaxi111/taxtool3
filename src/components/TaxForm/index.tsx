@@ -60,67 +60,78 @@ const TaxForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
-      {currentStep === 1 && (
-        <Step1 
-          onNext={handleNext} 
-        />
-      )}
-      {currentStep === 2 && (
-        <Step2 
-          onNext={handleNext} 
-          onPrevious={handlePrevious}
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-      )}
-      {currentStep === 3 && (
-        <Step3a 
-          onNext={handleNext} 
-          onPrevious={handlePrevious}
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-      )}
-      {currentStep === 4 && (
-        <Step3b 
-          onNext={handleNext} 
-          onPrevious={handlePrevious}
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-      )}
-      {currentStep === 5 && (
-        <Step4a 
-          onNext={handleNext} 
-          onPrevious={handlePrevious}
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-      )}
-      {currentStep === 6 && (
-        <Step4b
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-      )}
-      {currentStep === 7 && (
-        <Step4c
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-      )}
-      {currentStep === 8 && (
-        <Step5
-          onNext={handleSubmit}
-          onPrevious={handlePrevious}
-          formData={formData}
-        />
-      )}
+    <div className="min-h-screen bg-gray-100">
+      <div className="fixed top-4 left-4 z-50">
+        <a href="https://remedytaxsolutions.com" target="_blank" rel="noopener noreferrer">
+          <img 
+            src="/Group-237892-2.png" 
+            alt="Remedy Tax Solutions Logo" 
+            className="h-16 w-auto hover:opacity-90 transition-opacity"
+          />
+        </a>
+      </div>
+      <div className="py-12">
+        {currentStep === 1 && (
+          <Step1 
+            onNext={handleNext} 
+          />
+        )}
+        {currentStep === 2 && (
+          <Step2 
+            onNext={handleNext} 
+            onPrevious={handlePrevious}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        )}
+        {currentStep === 3 && (
+          <Step3a 
+            onNext={handleNext} 
+            onPrevious={handlePrevious}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        )}
+        {currentStep === 4 && (
+          <Step3b 
+            onNext={handleNext} 
+            onPrevious={handlePrevious}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        )}
+        {currentStep === 5 && (
+          <Step4a 
+            onNext={handleNext} 
+            onPrevious={handlePrevious}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        )}
+        {currentStep === 6 && (
+          <Step4b
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        )}
+        {currentStep === 7 && (
+          <Step4c
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        )}
+        {currentStep === 8 && (
+          <Step5
+            onNext={handleSubmit}
+            onPrevious={handlePrevious}
+            formData={formData}
+          />
+        )}
+      </div>
     </div>
   );
 };
