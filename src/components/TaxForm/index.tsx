@@ -61,7 +61,7 @@ const TaxForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="fixed top-4 left-4 z-50">
+      <div className="relative sm:fixed sm:top-4 sm:left-4 p-4 z-50">
         <a href="https://remedytaxsolutions.com" target="_blank" rel="noopener noreferrer">
           <img 
             src="/Group-237892-2.png" 
@@ -71,8 +71,7 @@ const TaxForm = () => {
         </a>
       </div>
       
-      {/* Main content with increased top padding on mobile */}
-      <div className="pt-24 sm:pt-12">
+      <div className="pt-4 sm:pt-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {currentStep === 1 && (
             <Step1 
