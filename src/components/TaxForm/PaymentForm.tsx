@@ -149,9 +149,23 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, formData }) => {
 
       // Get payment token
       const tokenResult = await cardRef.current.tokenize();
+      console.log('Token result:', tokenResult);
       
       if (tokenResult.status === 'OK') {
         try {
+          console.log('Sending data:', {
+            sourceId: tokenResult.token,
+            amount: firstPaymentAmount,
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone,
+            isPartialPayment,
+            secondPaymentDate: isPartialPayment ? secondPaymentDate : null,
+            secondPaymentAmount: isPartialPayment ? secondPaymentAmount : 0
+          });
+          
+          
           const response = await fetch('https://geniesheet.io/process-payment', {
             method: 'POST',
             headers: {
@@ -168,10 +182,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onBack, formData }) => {
               isPartialPayment,
               secondPaymentDate: isPartialPayment ? secondPaymentDate : null,
               secondPaymentAmount: isPartialPayment ? secondPaymentAmount : 0
-            }),
+            })
           });
 
           const data = await response.json();
+          console.log('Payment response:', data);
 
           if (!response.ok) {
             throw new Error(data.message || `Payment failed: ${response.statusText}`);

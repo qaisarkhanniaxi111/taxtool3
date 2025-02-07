@@ -100,14 +100,42 @@ const PersonalDetailsForm = ({ formData }: { formData: FormData }) => {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData?.debtType === 'personal-business') {
-      setShowBusinessForm(true);
-    } else {
-      setShowRetainerForm(true);
+  
+    // Prepare the payload with clientInfo and formData
+    const payload = {
+      ...formData,
+      ...clientInfo, // Attach personal info
+    };
+   console.log(payload)
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbzqOl8XFxVoZko6yVcx-eK0vxiNKK28Og7hTmALyOSCuhRsxTy0eKiq_olEQvjGwYh5/exec",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload),
+          mode: "no-cors" // Use no-cors to prevent CORS issues
+        }
+      );
+  
+      console.log("Form submitted successfully!");
+  
+      // Show the next form based on debt type
+      if (formData?.debtType === 'personal-business') {
+        setShowBusinessForm(true);
+      } else {
+        setShowRetainerForm(true);
+      }
+  
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
+  
 
   // Show BusinessDetailsForm if it's personal & business and showBusinessForm is true
   if (formData?.debtType === 'personal-business' && showBusinessForm) {
